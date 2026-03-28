@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Equations — Data Science Internship</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0a0a0f;
+    --paper: #f5f2eb;
+    --electric: #00ff88;
+    --plasma: #ff3366;
+    --gold: #f5c842;
+    --blue: #0066ff;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--ink);
+    color: var(--paper);
+    font-family: 'DM Sans', sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* ── CANVAS BACKGROUND ── */
+  #bg-canvas {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.35;
+  }
+
+  /* ── SCENE SYSTEM ── */
+  .scene {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.9s ease, transform 0.9s ease;
+  }
+  .scene.visible { opacity: 1; transform: translateY(0); }
+
+  /* ── SCENE 1: TITLE ── */
+  #scene-title {
+    text-align: center;
+    position: relative;
+    min-height: 100vh;
+    overflow: hidden;
+  }
+
+  .ticker-tape {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    background: var(--electric);
+    color: var(--ink);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.4rem 0;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  .ticker-inner {
+    display: inline-block;
+    animation: ticker 18s linear infinite;
+  }
+  @keyframes ticker {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  .se-eyebrow {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    color: var(--electric);
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    animation: fadeUp 0.8s 0.3s both;
+  }
+
+  .main-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(5rem, 14vw, 13rem);
+    line-height: 0.88;
+    letter-spacing: -0.02em;
+    background: linear-gradient(135deg, var(--paper) 0%, var(--gold) 50%, var(--electric) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: fadeUp 0.9s 0.5s both;
+  }
+
+  .sub-badge {
+    display: inline-block;
+    margin-top: 2rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 1rem;
+    background: var(--plasma);
+    color: var(--paper);
+    padding: 0.5rem 1.5rem;
+    transform: rotate(-1.5deg);
+    animation: fadeUp 0.8s 0.8s both;
+  }
+
+  .scroll-cue {
+    position: absolute;
+    bottom: 2.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    color: var(--electric);
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:0.4} 50%{opacity:1} }
+
+  /* ── SCENE 2: OPPORTUNITY ── */
+  #scene-opp {
+    background: transparent;
+  }
+  .opp-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    width: 100%;
+    max-width: 900px;
+    border: 1px solid rgba(245,242,235,0.15);
+  }
+  .opp-cell {
+    padding: 3rem 2.5rem;
+    border: 1px solid rgba(245,242,235,0.08);
+    position: relative;
+    overflow: hidden;
+    transition: background 0.3s;
+  }
+  .opp-cell:hover { background: rgba(0,255,136,0.05); }
+  .opp-cell::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px;
+    height: 100%;
+    background: var(--electric);
+    transform: scaleY(0);
+    transition: transform 0.3s;
+    transform-origin: bottom;
+  }
+  .opp-cell:hover::before { transform: scaleY(1); }
+  .opp-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 3.5rem;
+    color: var(--electric);
+    display: block;
+  }
+  .opp-label {
+    font-size: 0.85rem;
+    color: rgba(245,242,235,0.5);
+    font-family: 'Space Mono', monospace;
+    margin-top: 0.25rem;
+    display: block;
+  }
+  .opp-desc {
+    margin-top: 0.75rem;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: rgba(245,242,235,0.8);
+  }
+
+  /* ── SCENE 3: ROLES ── */
+  .section-header {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    color: var(--plasma);
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    text-align: center;
+  }
+  .roles-track {
+    display: flex;
+    gap: 1.5rem;
+    max-width: 1100px;
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .role-card {
+    flex: 1;
+    min-width: 220px;
+    max-width: 280px;
+    border: 1px solid rgba(245,242,235,0.12);
+    padding: 2rem 1.75rem;
+    position: relative;
+    cursor: default;
+    transition: border-color 0.3s, transform 0.3s;
+    background: rgba(10,10,15,0.7);
+  }
+  .role-card:hover {
+    border-color: var(--gold);
+    transform: translateY(-6px);
+  }
+  .role-icon {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    display: block;
+  }
+  .role-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.5rem;
+    letter-spacing: 0.05em;
+    color: var(--gold);
+    margin-bottom: 0.75rem;
+  }
+  .role-desc {
+    font-size: 0.9rem;
+    line-height: 1.65;
+    color: rgba(245,242,235,0.65);
+  }
+  .role-tag {
+    display: inline-block;
+    margin-top: 1.25rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    padding: 0.3rem 0.75rem;
+    background: rgba(0,255,136,0.1);
+    color: var(--electric);
+    border: 1px solid rgba(0,255,136,0.3);
+  }
+
+  /* ── SCENE 4: QUOTE ── */
+  #scene-quote {
+    background: linear-gradient(135deg, rgba(0,102,255,0.08), rgba(255,51,102,0.08));
+    border-top: 1px solid rgba(245,242,235,0.08);
+    border-bottom: 1px solid rgba(245,242,235,0.08);
+  }
+  blockquote {
+    max-width: 720px;
+    text-align: center;
+  }
+  blockquote p {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+    line-height: 1.1;
+    letter-spacing: 0.02em;
+    color: var(--paper);
+    margin-bottom: 1.5rem;
+  }
+  blockquote p span { color: var(--electric); }
+  blockquote cite {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    color: rgba(245,242,235,0.4);
+    letter-spacing: 0.2em;
+  }
+
+  /* ── SCENE 5: WHAT YOU'LL DO ── */
+  .skills-bar-list {
+    max-width: 700px;
+    width: 100%;
+  }
+  .skill-row {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 1.25rem;
+  }
+  .skill-name {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--paper);
+    min-width: 180px;
+    text-align: right;
+  }
+  .skill-bar-wrap {
+    flex: 1;
+    height: 6px;
+    background: rgba(245,242,235,0.1);
+    position: relative;
+    overflow: hidden;
+  }
+  .skill-bar {
+    height: 100%;
+    width: 0;
+    transition: width 1.2s cubic-bezier(0.16,1,0.3,1);
+  }
+  .scene.visible .skill-bar { width: var(--w); }
+  .skill-pct {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    color: rgba(245,242,235,0.4);
+    min-width: 35px;
+  }
+
+  /* ── SCENE 6: CTA ── */
+  #scene-cta {
+    text-align: center;
+    background: var(--ink);
+    position: relative;
+    overflow: hidden;
+  }
+  #scene-cta::before {
+    content: 'APPLY NOW';
+    position: absolute;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22vw;
+    color: rgba(245,242,235,0.02);
+    white-space: nowrap;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    pointer-events: none;
+    letter-spacing: -0.05em;
+  }
+  .cta-pretitle {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    color: var(--electric);
+    margin-bottom: 1.5rem;
+  }
+  .cta-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(3rem, 8vw, 7rem);
+    line-height: 0.9;
+    margin-bottom: 2.5rem;
+  }
+  .cta-btn {
+    display: inline-block;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.4rem;
+    letter-spacing: 0.12em;
+    padding: 1.1rem 3.5rem;
+    background: var(--electric);
+    color: var(--ink);
+    text-decoration: none;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s;
+    border: none;
+    cursor: pointer;
+  }
+  .cta-btn:hover { transform: scale(1.04); }
+  .cta-btn::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(255,255,255,0.15);
+    transform: translateX(-100%);
+    transition: transform 0.3s;
+  }
+  .cta-btn:hover::after { transform: translateX(0); }
+
+  .cta-fine {
+    margin-top: 1.5rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    color: rgba(245,242,235,0.3);
+    letter-spacing: 0.15em;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 2rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    color: rgba(245,242,235,0.2);
+    letter-spacing: 0.2em;
+    border-top: 1px solid rgba(245,242,235,0.06);
+  }
+  footer strong { color: var(--electric); }
+
+  /* ── UTILS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 600px) {
+    .opp-grid { grid-template-columns: 1fr; }
+    .skill-name { min-width: 130px; font-size: 0.7rem; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+
+<!-- SCENE 1: TITLE CARD -->
+<section class="scene visible" id="scene-title">
+  <div class="ticker-tape">
+    <span class="ticker-inner">
+      DATA SCIENCE INTERNSHIP &nbsp;✦&nbsp; SMART EQUATIONS &nbsp;✦&nbsp; MACHINE LEARNING &nbsp;✦&nbsp; ANALYTICS &nbsp;✦&nbsp; AI ENGINEERING &nbsp;✦&nbsp; REAL WORLD PROJECTS &nbsp;✦&nbsp; LAUNCH YOUR CAREER &nbsp;✦&nbsp;
+      DATA SCIENCE INTERNSHIP &nbsp;✦&nbsp; SMART EQUATIONS &nbsp;✦&nbsp; MACHINE LEARNING &nbsp;✦&nbsp; ANALYTICS &nbsp;✦&nbsp; AI ENGINEERING &nbsp;✦&nbsp; REAL WORLD PROJECTS &nbsp;✦&nbsp; LAUNCH YOUR CAREER &nbsp;✦&nbsp;
+    </span>
+  </div>
+
+  <div style="margin-top:3rem;">
+    <p class="se-eyebrow">Smart Equations Presents</p>
+    <h1 class="main-title">DATA<br>SCIENCE<br>INTERN</h1>
+    <span class="sub-badge">Applications Open Now — 2025 Cohort</span>
+  </div>
+
+  <div class="scroll-cue">↓ &nbsp; SCROLL TO EXPLORE &nbsp; ↓</div>
+</section>
+
+<!-- SCENE 2: THE OPPORTUNITY -->
+<section class="scene" id="scene-opp">
+  <p class="section-header">// The Opportunity</p>
+  <div class="opp-grid">
+    <div class="opp-cell">
+      <span class="opp-num">12</span>
+      <span class="opp-label">WEEKS</span>
+      <p class="opp-desc">Immersive, hands-on program where you build, ship, and present real data products.</p>
+    </div>
+    <div class="opp-cell">
+      <span class="opp-num">100%</span>
+      <span class="opp-label">REAL PROJECTS</span>
+      <p class="opp-desc">No busy-work. Every sprint contributes to Smart Equations client deliverables.</p>
+    </div>
+    <div class="opp-cell">
+      <span class="opp-num">1:1</span>
+      <span class="opp-label">MENTORSHIP</span>
+      <p class="opp-desc">Paired with a senior data scientist from day one through your final presentation.</p>
+    </div>
+    <div class="opp-cell">
+      <span class="opp-num">∞</span>
+      <span class="opp-label">GROWTH CEILING</span>
+      <p class="opp-desc">Top performers are offered full-time roles and leadership tracks within the firm.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SCENE 3: ROLES -->
+<section class="scene" id="scene-roles">
+  <p class="section-header">// Open Tracks</p>
+  <div class="roles-track">
+    <div class="role-card">
+      <span class="role-icon">🤖</span>
+      <div class="role-title">ML Engineering</div>
+      <p class="role-desc">Design, train, and deploy machine learning models that power Smart Equations' products end-to-end.</p>
+      <span class="role-tag">Python · TensorFlow · MLflow</span>
+    </div>
+    <div class="role-card">
+      <span class="role-icon">📊</span>
+      <div class="role-title">Data Analytics</div>
+      <p class="role-desc">Transform raw datasets into strategic insights. Build dashboards clients actually use to make decisions.</p>
+      <span class="role-tag">SQL · Tableau · dbt</span>
+    </div>
+    <div class="role-card">
+      <span class="role-icon">🧠</span>
+      <div class="role-title">AI Research</div>
+      <p class="role-desc">Experiment with cutting-edge LLMs, generative models, and multimodal architectures in applied settings.</p>
+      <span class="role-tag">PyTorch · HuggingFace · RAG</span>
+    </div>
+    <div class="role-card">
+      <span class="role-icon">🔧</span>
+      <div class="role-title">Data Engineering</div>
+      <p class="role-desc">Build the pipelines and infrastructure that keep every data product fast, reliable, and scalable.</p>
+      <span class="role-tag">Spark · Airflow · Snowflake</span>
+    </div>
+  </div>
+</section>
+
+<!-- SCENE 4: QUOTE -->
+<section class="scene" id="scene-quote">
+  <blockquote>
+    <p>The interns who join us don't just <span>learn data science</span> — they ship it.</p>
+    <cite>— SMART EQUATIONS LEADERSHIP TEAM</cite>
+  </blockquote>
+</section>
+
+<!-- SCENE 5: WHAT YOU'LL DO -->
+<section class="scene" id="scene-skills">
+  <p class="section-header">// Skills You'll Level Up</p>
+  <div class="skills-bar-list">
+    <div class="skill-row">
+      <span class="skill-name">Statistical Modeling</span>
+      <div class="skill-bar-wrap"><div class="skill-bar" style="--w:90%; background: linear-gradient(90deg, var(--electric), #00cc6a);"></div></div>
+      <span class="skill-pct">90%</span>
+    </div>
+    <div class="skill-row">
+      <span class="skill-name">Machine Learning</span>
+      <div class="skill-bar-wrap"><div class="skill-bar" style="--w:85%; background: linear-gradient(90deg, var(--blue), #4488ff);"></div></div>
+      <span class="skill-pct">85%</span>
+    </div>
+    <div class="skill-row">
+      <span class="skill-name">Data Visualization</span>
+      <div class="skill-bar-wrap"><div class="skill-bar" style="--w:80%; background: linear-gradient(90deg, var(--gold), #ffd700);"></div></div>
+      <span class="skill-pct">80%</span>
+    </div>
+    <div class="skill-row">
+      <span class="skill-name">SQL & Databases</span>
+      <div class="skill-bar-wrap"><div class="skill-bar" style="--w:88%; background: linear-gradient(90deg, var(--plasma), #ff6688);"></div></div>
+      <span class="skill-pct">88%</span>
+    </div>
+    <div class="skill-row">
+      <span class="skill-name">Cloud & MLOps</span>
+      <div class="skill-bar-wrap"><div class="skill-bar" style="--w:75%; background: linear-gradient(90deg, #aa44ff, #cc88ff);"></div></div>
+      <span class="skill-pct">75%</span>
+    </div>
+    <div class="skill-row">
+      <span class="skill-name">Business Storytelling</span>
+      <div class="skill-bar-wrap"><div class="skill-bar" style="--w:82%; background: linear-gradient(90deg, var(--electric), var(--blue));"></div></div>
+      <span class="skill-pct">82%</span>
+    </div>
+  </div>
+</section>
+
+<!-- SCENE 6: CTA -->
+<section class="scene" id="scene-cta">
+  <p class="cta-pretitle">// Join Smart Equations</p>
+  <h2 class="cta-title">Ready to<br>Solve Real<br>Problems?</h2>
+  <button class="cta-btn" onclick="alert('Applications opening soon at smartequations.com/internships')">Apply Today</button>
+  <p class="cta-fine">SMART EQUATIONS · DATA SCIENCE INTERNSHIP PROGRAM · 2025</p>
+</section>
+
+<footer>
+  <strong>SMART EQUATIONS</strong> &nbsp;·&nbsp; Building the future with data &nbsp;·&nbsp; smartequations.com
+</footer>
+
+<script>
+// Animated grid background
+const canvas = document.getElementById('bg-canvas');
+const ctx = canvas.getContext('2d');
+let W, H, dots = [];
+
+function resize() {
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+  initDots();
+}
+
+function initDots() {
+  dots = [];
+  const cols = Math.floor(W / 60);
+  const rows = Math.floor(H / 60);
+  for (let i = 0; i < cols; i++) {
+    for (let j = 0; j < rows; j++) {
+      dots.push({
+        x: i * 60 + 30,
+        y: j * 60 + 30,
+        r: Math.random() * 1.2 + 0.3,
+        speed: Math.random() * 0.003 + 0.001,
+        phase: Math.random() * Math.PI * 2
+      });
+    }
+  }
+}
+
+let t = 0;
+let animLines = [];
+
+function animate() {
+  ctx.clearRect(0, 0, W, H);
+  t += 0.008;
+
+  // Flowing lines
+  if (Math.random() < 0.02) {
+    animLines.push({ x: Math.random() * W, y: -10, speed: 1.5 + Math.random() * 2, alpha: 0.5 });
+  }
+  animLines = animLines.filter(l => l.alpha > 0);
+  animLines.forEach(l => {
+    l.y += l.speed;
+    l.alpha -= 0.003;
+    ctx.beginPath();
+    ctx.moveTo(l.x, l.y);
+    ctx.lineTo(l.x, l.y - 30);
+    ctx.strokeStyle = `rgba(0,255,136,${l.alpha})`;
+    ctx.lineWidth = 1;
+    ctx.stroke();
+  });
+
+  // Dots grid
+  dots.forEach(d => {
+    const wave = Math.sin(t + d.phase + d.x * 0.015) * 0.5 + 0.5;
+    ctx.beginPath();
+    ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(245,242,235,${wave * 0.3 + 0.05})`;
+    ctx.fill();
+  });
+
+  requestAnimationFrame(animate);
+}
+
+window.addEventListener('resize', resize);
+resize();
+animate();
+
+// Intersection observer for scenes
+const scenes = document.querySelectorAll('.scene');
+const obs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) e.target.classList.add('visible');
+  });
+}, { threshold: 0.2 });
+scenes.forEach(s => obs.observe(s));
+</script>
+</body>
+</html>

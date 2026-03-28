@@ -1,0 +1,901 @@
+{% extends "user/base.html" %}
+{% load static %}
+
+{% block title %}Python Full Stack Development - Smart Equations{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* ============================================
+       VIDEO HERO SECTION
+    ============================================ */
+    .video-hero {
+        position: relative;
+        width: 100%;
+        height: 88vh;
+        min-height: 520px;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .video-hero__video {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+        z-index: 0;
+    }
+
+    .video-hero__overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+            105deg,
+            rgba(10, 20, 90, 0.88) 0%,
+            rgba(26, 41, 128, 0.72) 45%,
+            rgba(38, 208, 206, 0.28) 100%
+        );
+        z-index: 1;
+    }
+
+    .video-hero__overlay::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='30' cy='30' r='1.4' fill='%23ffffff' fill-opacity='0.04'/%3E%3C/svg%3E");
+    }
+
+    .video-hero__content {
+        position: relative;
+        z-index: 2;
+        text-align: center;
+        color: #fff;
+        max-width: 900px;
+        padding: 0 24px;
+        animation: fadeUp 1s ease forwards;
+    }
+
+    .video-hero__badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(255,255,255,0.12);
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(255,255,255,0.22);
+        padding: 7px 20px;
+        border-radius: 60px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        color: rgba(255,255,255,0.92);
+        margin-bottom: 28px;
+    }
+    .video-hero__badge i { color: #26d0ce; }
+
+    .video-hero__content h1 {
+        font-size: clamp(2rem, 5vw, 3.8rem);
+        font-weight: 900;
+        line-height: 1.1;
+        margin: 0 0 20px;
+        text-shadow: 0 4px 24px rgba(0,0,0,0.35);
+        letter-spacing: -0.02em;
+    }
+
+    .video-hero__content h1 span {
+        background: linear-gradient(130deg, #fff, #a0f0ee);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .video-hero__content p {
+        font-size: clamp(1rem, 1.8vw, 1.25rem);
+        line-height: 1.7;
+        max-width: 680px;
+        margin: 0 auto 36px;
+        color: rgba(255,255,255,0.85);
+    }
+
+    .video-hero__btns {
+        display: flex;
+        gap: 16px;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-bottom: 52px;
+    }
+
+    .vhero-btn-primary {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        background: linear-gradient(135deg, #ff6b6b, #ff4444);
+        color: #fff;
+        padding: 14px 36px;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: 0.95rem;
+        text-decoration: none;
+        box-shadow: 0 8px 24px rgba(255,107,107,0.45);
+        transition: transform 0.25s, box-shadow 0.25s;
+    }
+    .vhero-btn-primary:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 16px 36px rgba(255,107,107,0.55);
+        color: #fff;
+    }
+
+    .vhero-btn-outline {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        background: rgba(255,255,255,0.08);
+        backdrop-filter: blur(10px);
+        border: 1.5px solid rgba(255,255,255,0.35);
+        color: #fff;
+        padding: 13px 32px;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        text-decoration: none;
+        transition: all 0.25s;
+    }
+    .vhero-btn-outline:hover {
+        background: rgba(255,255,255,0.20);
+        border-color: rgba(255,255,255,0.70);
+        transform: translateY(-2px);
+        color: #fff;
+    }
+
+    .video-hero__stats {
+        display: flex;
+        justify-content: center;
+        gap: 24px;
+        flex-wrap: wrap;
+    }
+
+    .vhero-stat {
+        text-align: center;
+        padding: 18px 26px;
+        background: rgba(255,255,255,0.10);
+        backdrop-filter: blur(10px);
+        border-radius: 16px;
+        border: 1px solid rgba(255,255,255,0.18);
+        min-width: 140px;
+        transition: transform 0.25s, background 0.25s;
+    }
+    .vhero-stat:hover { transform: translateY(-4px); background: rgba(255,255,255,0.16); }
+    .vhero-stat-number {
+        display: block;
+        font-size: 2.2rem;
+        font-weight: 900;
+        color: #ffd369;
+        line-height: 1;
+        margin-bottom: 6px;
+    }
+    .vhero-stat-label { font-size: 0.82rem; opacity: 0.88; font-weight: 500; }
+
+    .video-hero__mute {
+        position: absolute;
+        bottom: 28px; right: 28px;
+        z-index: 5;
+        background: rgba(255,255,255,0.15);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255,255,255,0.28);
+        color: white;
+        width: 44px; height: 44px;
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        cursor: pointer; font-size: 1rem;
+        transition: background 0.2s;
+    }
+    .video-hero__mute:hover { background: rgba(255,255,255,0.30); }
+
+    .video-hero__scroll {
+        position: absolute;
+        bottom: 28px; left: 50%;
+        transform: translateX(-50%);
+        z-index: 5;
+        display: flex; flex-direction: column; align-items: center; gap: 6px;
+        color: rgba(255,255,255,0.6);
+        font-size: 0.72rem; letter-spacing: 1.5px; text-transform: uppercase;
+        animation: bounce 2s ease-in-out infinite;
+    }
+    .video-hero__scroll i { font-size: 1.2rem; }
+
+    @keyframes bounce {
+        0%, 100% { transform: translateX(-50%) translateY(0); }
+        50%       { transform: translateX(-50%) translateY(8px); }
+    }
+    @keyframes fadeUp {
+        from { opacity: 0; transform: translateY(30px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ============================================
+       SHARED STYLES
+    ============================================ */
+    .what-is-section { padding: 100px 0; background: #f8f9fa; }
+    .section-container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+    .section-title {
+        text-align: center; margin-bottom: 60px; color: #1a2980;
+        font-size: 2.8rem; position: relative; padding-bottom: 20px;
+    }
+    .section-title::after {
+        content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+        width: 100px; height: 4px;
+        background: linear-gradient(to right, #1a2980, #26d0ce); border-radius: 2px;
+    }
+    .section-subtitle { text-align: center; color: #666; font-size: 1.2rem; max-width: 800px; margin: 0 auto 50px; line-height: 1.6; }
+
+    .definition-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+    .definition-text h3 { color: #1a2980; margin-bottom: 20px; font-size: 2rem; }
+    .definition-text p { color: #555; line-height: 1.8; margin-bottom: 25px; font-size: 1.1rem; }
+
+    .highlight-box {
+        background: white; padding: 30px; border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08); border-left: 5px solid #26d0ce; margin: 30px 0;
+    }
+    .highlight-box h4 { color: #1a2980; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
+
+    .definition-image { position: relative; }
+    .definition-image img { width: 100%; border-radius: 15px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); transition: transform 0.5s ease; }
+    .definition-image:hover img { transform: scale(1.02); }
+    .image-caption {
+        position: absolute; bottom: -20px; left: 20px; right: 20px;
+        background: white; padding: 15px; border-radius: 10px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.1); text-align: center; font-style: italic; color: #666;
+    }
+
+    /* Architecture */
+    .architecture-section { padding: 100px 0; background: white; }
+    .architecture-timeline { display: flex; justify-content: space-between; margin-top: 60px; position: relative; }
+    .architecture-timeline::before {
+        content: ''; position: absolute; top: 60px; left: 10%; right: 10%;
+        height: 3px; background: linear-gradient(to right, #1a2980, #26d0ce); z-index: 1;
+    }
+    .architecture-layer { text-align: center; position: relative; z-index: 2; flex: 1; padding: 0 15px; }
+    .layer-number {
+        width: 120px; height: 120px;
+        background: linear-gradient(135deg, #1a2980, #26d0ce);
+        border-radius: 50%; display: flex; align-items: center; justify-content: center;
+        margin: 0 auto 30px; color: white; font-size: 2rem; font-weight: 700;
+        box-shadow: 0 10px 30px rgba(26,41,128,0.3); transition: transform 0.3s ease;
+    }
+    .architecture-layer:hover .layer-number { transform: scale(1.1) rotate(5deg); }
+    .layer-content {
+        background: #f8f9fa; padding: 30px; border-radius: 15px; min-height: 280px;
+        transition: all 0.3s ease; border: 2px solid transparent;
+    }
+    .architecture-layer:hover .layer-content {
+        background: white; border-color: #26d0ce;
+        box-shadow: 0 15px 35px rgba(38,208,206,0.1); transform: translateY(-10px);
+    }
+    .layer-content h4 { color: #1a2980; margin-bottom: 15px; font-size: 1.4rem; }
+    .layer-content p { color: #666; line-height: 1.6; margin-bottom: 15px; }
+    .layer-tools { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 15px; }
+    .tool-tag { background: #f0f7ff; color: #1a2980; padding: 5px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 500; }
+
+    /* Technologies */
+    .python-technologies { padding: 100px 0; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); }
+    .technologies-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 30px; margin-top: 50px; }
+    .tech-card {
+        background: white; border-radius: 15px; overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08); transition: all 0.4s ease;
+        position: relative; height: 100%; display: flex; flex-direction: column;
+    }
+    .tech-card:hover { transform: translateY(-15px); box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
+    .tech-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 5px; background: linear-gradient(to right, #1a2980, #26d0ce); }
+    .tech-header { padding: 30px 30px 0; text-align: center; flex-shrink: 0; }
+    .tech-icon { width: 80px; height: 80px; background: linear-gradient(135deg, #1a2980, #26d0ce); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: white; font-size: 2rem; }
+    .tech-header h4 { color: #1a2980; margin-bottom: 10px; font-size: 1.5rem; min-height: 60px; display: flex; align-items: center; justify-content: center; }
+    .tech-body { padding: 20px 30px 30px; flex-grow: 1; display: flex; flex-direction: column; }
+    .tech-body p { margin-bottom: 20px; color: #666; line-height: 1.6; }
+    .tech-features { list-style: none; margin: 0; padding: 0; flex-grow: 1; }
+    .tech-features li { padding: 10px 0; border-bottom: 1px solid #eee; display: flex; align-items: flex-start; gap: 10px; color: #666; font-size: 0.95rem; line-height: 1.4; }
+    .tech-features li:last-child { border-bottom: none; }
+    .tech-features i { color: #26d0ce; flex-shrink: 0; margin-top: 3px; }
+
+    /* Projects */
+    .projects-section { padding: 100px 0; background: white; }
+    .projects-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 40px; margin-top: 50px; }
+    .project-card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.08); transition: all 0.4s ease; display: flex; flex-direction: column; }
+    .project-card:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
+    .project-image { height: 200px; overflow: hidden; position: relative; flex-shrink: 0; }
+    .project-image img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+    .project-card:hover .project-image img { transform: scale(1.1); }
+    .project-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(26,41,128,0.7), rgba(38,208,206,0.7)); display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; }
+    .project-card:hover .project-overlay { opacity: 1; }
+    .project-overlay span { color: white; font-weight: 600; background: rgba(0,0,0,0.7); padding: 10px 20px; border-radius: 50px; font-size: 1.1rem; }
+    .project-content { padding: 30px; flex-grow: 1; display: flex; flex-direction: column; }
+    .project-content h4 { color: #1a2980; margin-bottom: 15px; font-size: 1.4rem; min-height: 60px; display: flex; align-items: center; }
+    .project-content p { color: #666; line-height: 1.6; margin-bottom: 20px; flex-grow: 1; }
+    .project-tech { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+    .project-tech-tag { background: #f0f7ff; color: #1a2980; padding: 8px 15px; border-radius: 20px; font-size: 0.9rem; font-weight: 500; white-space: nowrap; }
+
+    /* Learning Path */
+    .learning-section { padding: 100px 0; background: linear-gradient(135deg, #1a2980 0%, #26d0ce 100%); color: white; }
+    .learning-section .section-title { color: white; }
+    .learning-section .section-title::after { background: white; }
+    .learning-path { display: flex; justify-content: space-between; margin-top: 60px; position: relative; }
+    .learning-path::before { content: ''; position: absolute; top: 40px; left: 0; right: 0; height: 2px; background: rgba(255,255,255,0.3); }
+    .learning-stage { text-align: center; position: relative; z-index: 2; flex: 1; padding: 0 15px; }
+    .stage-icon { width: 80px; height: 80px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: #1a2980; font-size: 1.8rem; box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
+    .stage-content { background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); padding: 25px; border-radius: 15px; min-height: 180px; border: 1px solid rgba(255,255,255,0.2); display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    .stage-content h4 { color: #ffd369; margin-bottom: 10px; font-size: 1.3rem; text-align: center; min-height: 60px; display: flex; align-items: center; justify-content: center; }
+    .stage-content p { color: rgba(255,255,255,0.9); font-size: 0.95rem; text-align: center; line-height: 1.5; }
+
+    /* Frameworks */
+    .frameworks-section { padding: 100px 0; background: #f8f9fa; }
+    .frameworks-grid { display: grid; grid-template-columns: repeat(6,1fr); gap: 30px; margin-top: 50px; }
+    .framework-item { background: white; padding: 30px; border-radius: 15px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.08); transition: all 0.3s ease; position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 200px; }
+    .framework-item:hover { transform: translateY(-10px); box-shadow: 0 15px 35px rgba(0,0,0,0.15); }
+    .framework-item::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: linear-gradient(to right, #1a2980, #26d0ce); }
+    .framework-logo { width: 80px; height: 80px; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; color: #1a2980; }
+    .framework-item h4 { color: #1a2980; margin-bottom: 10px; font-size: 1.2rem; min-height: 50px; display: flex; align-items: center; justify-content: center; }
+    .framework-category { display: inline-block; background: #f0f7ff; color: #1a2980; padding: 5px 15px; border-radius: 20px; font-size: 0.85rem; margin-top: 10px; }
+
+    /* Salary */
+    .salary-section { padding: 100px 0; background: white; }
+    .salary-cards { display: grid; grid-template-columns: repeat(3,1fr); gap: 40px; margin-top: 50px; }
+    .salary-card { background: white; border-radius: 15px; padding: 40px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.08); transition: all 0.3s ease; position: relative; overflow: hidden; }
+    .salary-card:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
+    .salary-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 5px; background: linear-gradient(to right, #1a2980, #26d0ce); }
+    .salary-icon { width: 80px; height: 80px; background: linear-gradient(135deg, #1a2980, #26d0ce); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 25px; color: white; font-size: 2rem; }
+    .salary-amount { font-size: 2.5rem; font-weight: 700; color: #1a2980; margin: 20px 0 10px; }
+    .salary-title { color: #333; font-size: 1.4rem; margin-bottom: 15px; }
+    .salary-description { color: #666; line-height: 1.6; font-size: 1rem; }
+
+    /* CTA */
+    .cta-section { padding: 100px 0; background: linear-gradient(rgba(26,41,128,0.9), rgba(38,208,206,0.9)), url('https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80'); background-size: cover; background-position: center; color: white; text-align: center; }
+    .cta-content { max-width: 800px; margin: 0 auto; padding: 0 20px; }
+    .cta-content h2 { font-size: 2.8rem; margin-bottom: 20px; text-shadow: 2px 2px 10px rgba(0,0,0,0.3); }
+    .cta-content p { font-size: 1.2rem; margin-bottom: 40px; line-height: 1.6; opacity: 0.9; }
+    .cta-buttons { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; }
+    .cta-button { padding: 15px 40px; border-radius: 50px; font-weight: 600; font-size: 16px; cursor: pointer; transition: all 0.3s ease; text-decoration: none; display: inline-block; min-width: 180px; text-align: center; }
+    .cta-primary { background: #ff6b6b; color: white; border: none; box-shadow: 0 4px 15px rgba(255,107,107,0.4); }
+    .cta-primary:hover { background: #ff5252; transform: translateY(-3px); box-shadow: 0 8px 20px rgba(255,107,107,0.6); }
+    .cta-secondary { background: transparent; color: white; border: 2px solid white; }
+    .cta-secondary:hover { background: white; color: #1a2980; transform: translateY(-3px); }
+
+    /* Scroll animation */
+    .animate-on-scroll { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .animate-on-scroll.animated { opacity: 1; transform: translateY(0); }
+
+    /* ============================================
+       RESPONSIVE
+    ============================================ */
+    @media (max-width: 1200px) {
+        .technologies-grid { grid-template-columns: repeat(2,1fr); }
+        .projects-grid { grid-template-columns: repeat(2,1fr); }
+        .frameworks-grid { grid-template-columns: repeat(3,1fr); }
+        .salary-cards { grid-template-columns: repeat(2,1fr); }
+        .architecture-timeline { flex-wrap: wrap; }
+        .architecture-layer { flex: 0 0 calc(50% - 30px); margin-bottom: 60px; }
+        .architecture-timeline::before { display: none; }
+    }
+    @media (max-width: 992px) {
+        .video-hero { height: 80vh; }
+        .definition-grid { grid-template-columns: 1fr; }
+        .learning-path { flex-wrap: wrap; }
+        .learning-stage { flex: 0 0 calc(50% - 30px); margin-bottom: 40px; }
+        .learning-path::before { display: none; }
+        .frameworks-grid { grid-template-columns: repeat(2,1fr); }
+    }
+    @media (max-width: 768px) {
+        .video-hero { height: 100svh; }
+        .video-hero__stats { gap: 12px; }
+        .vhero-stat { min-width: 120px; padding: 14px 18px; }
+        .vhero-stat-number { font-size: 1.8rem; }
+        .architecture-layer { flex: 0 0 100%; }
+        .layer-content { min-height: auto; }
+        .technologies-grid, .projects-grid, .salary-cards { grid-template-columns: 1fr; }
+        .cta-buttons { flex-direction: column; align-items: center; }
+        .cta-button { width: 100%; max-width: 300px; }
+        .learning-stage { flex: 0 0 100%; }
+        .video-hero__mute { bottom: 70px; }
+    }
+    @media (max-width: 576px) {
+        .video-hero__btns { flex-direction: column; align-items: center; }
+        .vhero-btn-primary, .vhero-btn-outline { width: 100%; max-width: 280px; justify-content: center; }
+        .frameworks-grid { grid-template-columns: 1fr; }
+        .framework-item { height: 180px; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- ============================================
+     VIDEO HERO
+============================================ -->
+<section class="video-hero">
+
+    <video
+        class="video-hero__video"
+        id="heroVideo"
+        autoplay
+        muted
+        loop
+        playsinline
+        preload="auto"
+        poster="{% static 'images/Python.png' %}"
+    >
+        <source src="{% static 'videos/python.mp4' %}" type="video/mp4">
+    </video>
+
+    <div class="video-hero__overlay"></div>
+
+    <button class="video-hero__mute" id="muteBtn" aria-label="Toggle mute">
+        <i class="fas fa-volume-mute" id="muteIcon"></i>
+    </button>
+
+    <div class="video-hero__scroll">
+        <span>Scroll</span>
+        <i class="fas fa-chevron-down"></i>
+    </div>
+
+    <div class="video-hero__content">
+        <div class="video-hero__badge">
+            <i class="fas fa-fire"></i> High Demand Program
+        </div>
+
+        <h1>
+            Python Full Stack<br>
+            <span>Development</span>
+        </h1>
+
+        <p>
+            Master end-to-end web development with Python. Build scalable applications
+            from frontend to backend using the most versatile programming language.
+        </p>
+
+        <div class="video-hero__btns">
+            <a href="{% url 'request_call' %}" class="vhero-btn-primary">
+                <i class="fas fa-phone"></i> Request Consultation
+            </a>
+            <a href="#about" class="vhero-btn-outline">
+                <i class="fas fa-play-circle"></i> Explore Program
+            </a>
+        </div>
+
+        <div class="video-hero__stats">
+            <div class="vhero-stat">
+                <span class="vhero-stat-number">#1</span>
+                <span class="vhero-stat-label">Most Popular Language</span>
+            </div>
+            <div class="vhero-stat">
+                <span class="vhero-stat-number">8.2M</span>
+                <span class="vhero-stat-label">Developers Worldwide</span>
+            </div>
+            <div class="vhero-stat">
+                <span class="vhero-stat-number">$120K</span>
+                <span class="vhero-stat-label">Average Salary</span>
+            </div>
+            <div class="vhero-stat">
+                <span class="vhero-stat-number">35%</span>
+                <span class="vhero-stat-label">Yearly Growth</span>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+
+<!-- What is Python Full Stack -->
+<section class="what-is-section" id="about">
+    <div class="section-container">
+        <h2 class="section-title animate-on-scroll">What is Python Full Stack Development?</h2>
+        <p class="section-subtitle animate-on-scroll">Python Full Stack Development involves building complete web applications using Python for both frontend and backend development, along with database management and deployment.</p>
+
+        <div class="definition-grid">
+            <div class="definition-text">
+                <h3 class="animate-on-scroll">The Complete Web Development Stack</h3>
+                <p class="animate-on-scroll">Python Full Stack Development combines <strong>Frontend Technologies</strong> (HTML, CSS, JavaScript), <strong>Python Backend Frameworks</strong> (Django, Flask, FastAPI), <strong>Databases</strong> (PostgreSQL, MySQL, MongoDB), and <strong>DevOps Tools</strong> (Docker, AWS, CI/CD) to create complete web solutions.</p>
+
+                <div class="highlight-box animate-on-scroll">
+                    <h4><i class="fas fa-lightbulb"></i> Why Python for Full Stack?</h4>
+                    <p>Python's simplicity, extensive libraries, and strong community support make it ideal for rapid development, prototyping, and building scalable applications across all layers of the stack.</p>
+                </div>
+
+                <p class="animate-on-scroll">From building REST APIs with Django REST Framework to creating interactive UIs with JavaScript frameworks, Python Full Stack developers have the versatility to handle every aspect of web application development while leveraging Python's powerful ecosystem.</p>
+            </div>
+
+            <div class="definition-image animate-on-scroll">
+                <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Python Full Stack Architecture" loading="lazy">
+                <div class="image-caption">Python powers every layer of modern web applications</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- Full Stack Architecture -->
+<section class="architecture-section">
+    <div class="section-container">
+        <h2 class="section-title animate-on-scroll">Full Stack Architecture with Python</h2>
+        <p class="section-subtitle animate-on-scroll">A comprehensive approach to building complete web applications across all layers</p>
+
+        <div class="architecture-timeline">
+            <div class="architecture-layer animate-on-scroll">
+                <div class="layer-number">1</div>
+                <div class="layer-content">
+                    <h4>Frontend Layer</h4>
+                    <p>User interface development with modern frameworks that integrate seamlessly with Python backends.</p>
+                    <div class="layer-tools">
+                        <span class="tool-tag">React.js</span>
+                        <span class="tool-tag">Vue.js</span>
+                        <span class="tool-tag">Angular</span>
+                        <span class="tool-tag">JavaScript/TypeScript</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="architecture-layer animate-on-scroll">
+                <div class="layer-number">2</div>
+                <div class="layer-content">
+                    <h4>Backend Layer</h4>
+                    <p>Server-side logic, API development, and business logic implementation using Python frameworks.</p>
+                    <div class="layer-tools">
+                        <span class="tool-tag">Django</span>
+                        <span class="tool-tag">Flask</span>
+                        <span class="tool-tag">FastAPI</span>
+                        <span class="tool-tag">REST APIs</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="architecture-layer animate-on-scroll">
+                <div class="layer-number">3</div>
+                <div class="layer-content">
+                    <h4>Database Layer</h4>
+                    <p>Data storage, retrieval, and management with both SQL and NoSQL databases.</p>
+                    <div class="layer-tools">
+                        <span class="tool-tag">PostgreSQL</span>
+                        <span class="tool-tag">MySQL</span>
+                        <span class="tool-tag">MongoDB</span>
+                        <span class="tool-tag">Redis</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="architecture-layer animate-on-scroll">
+                <div class="layer-number">4</div>
+                <div class="layer-content">
+                    <h4>DevOps Layer</h4>
+                    <p>Deployment, scaling, monitoring, and infrastructure management for production applications.</p>
+                    <div class="layer-tools">
+                        <span class="tool-tag">Docker</span>
+                        <span class="tool-tag">AWS</span>
+                        <span class="tool-tag">CI/CD</span>
+                        <span class="tool-tag">Nginx</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- Python Technologies -->
+<section class="python-technologies">
+    <div class="section-container">
+        <h2 class="section-title animate-on-scroll">Core Python Technologies</h2>
+        <p class="section-subtitle animate-on-scroll">Master the essential Python technologies that power modern web applications</p>
+
+        <div class="technologies-grid">
+            <div class="tech-card animate-on-scroll">
+                <div class="tech-header">
+                    <div class="tech-icon"><i class="fab fa-python"></i></div>
+                    <h4>Django Framework</h4>
+                </div>
+                <div class="tech-body">
+                    <p>The most popular Python web framework for building robust, scalable applications quickly.</p>
+                    <ul class="tech-features">
+                        <li><i class="fas fa-check"></i> Batteries-included framework</li>
+                        <li><i class="fas fa-check"></i> Built-in admin panel</li>
+                        <li><i class="fas fa-check"></i> ORM for database operations</li>
+                        <li><i class="fas fa-check"></i> Security features included</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="tech-card animate-on-scroll">
+                <div class="tech-header">
+                    <div class="tech-icon"><i class="fas fa-flask"></i></div>
+                    <h4>Flask Framework</h4>
+                </div>
+                <div class="tech-body">
+                    <p>Lightweight and flexible micro-framework for building web applications and APIs.</p>
+                    <ul class="tech-features">
+                        <li><i class="fas fa-check"></i> Minimal and flexible</li>
+                        <li><i class="fas fa-check"></i> Great for microservices</li>
+                        <li><i class="fas fa-check"></i> Extensive extensions</li>
+                        <li><i class="fas fa-check"></i> Easy to learn and use</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="tech-card animate-on-scroll">
+                <div class="tech-header">
+                    <div class="tech-icon"><i class="fas fa-bolt"></i></div>
+                    <h4>FastAPI</h4>
+                </div>
+                <div class="tech-body">
+                    <p>Modern, fast web framework for building APIs with Python 3.7+ based on standard Python type hints.</p>
+                    <ul class="tech-features">
+                        <li><i class="fas fa-check"></i> High performance</li>
+                        <li><i class="fas fa-check"></i> Automatic API documentation</li>
+                        <li><i class="fas fa-check"></i> Async support</li>
+                        <li><i class="fas fa-check"></i> Type hints based</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="tech-card animate-on-scroll">
+                <div class="tech-header">
+                    <div class="tech-icon"><i class="fas fa-exchange-alt"></i></div>
+                    <h4>REST API Development</h4>
+                </div>
+                <div class="tech-body">
+                    <p>Building robust and scalable RESTful APIs for web and mobile applications.</p>
+                    <ul class="tech-features">
+                        <li><i class="fas fa-check"></i> Django REST Framework</li>
+                        <li><i class="fas fa-check"></i> Flask-RESTful</li>
+                        <li><i class="fas fa-check"></i> API authentication</li>
+                        <li><i class="fas fa-check"></i> Rate limiting</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- Projects -->
+<section class="projects-section">
+    <div class="section-container">
+        <h2 class="section-title animate-on-scroll">Projects You'll Build</h2>
+        <p class="section-subtitle animate-on-scroll">Hands-on projects that prepare you for real-world development scenarios</p>
+
+        <div class="projects-grid">
+            <div class="project-card animate-on-scroll">
+                <div class="project-image">
+                    <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="E-commerce Platform" loading="lazy">
+                    <div class="project-overlay"><span>E-commerce Platform</span></div>
+                </div>
+                <div class="project-content">
+                    <h4>Full Stack E-commerce</h4>
+                    <p>Build a complete online store with product catalog, shopping cart, user authentication, payment integration, and admin dashboard.</p>
+                    <div class="project-tech">
+                        <span class="project-tech-tag">Django</span>
+                        <span class="project-tech-tag">React</span>
+                        <span class="project-tech-tag">Stripe API</span>
+                        <span class="project-tech-tag">PostgreSQL</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="project-card animate-on-scroll">
+                <div class="project-image">
+                    <img src="https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Social Media App" loading="lazy">
+                    <div class="project-overlay"><span>Social Media Application</span></div>
+                </div>
+                <div class="project-content">
+                    <h4>Social Networking Platform</h4>
+                    <p>Create a social media application with user profiles, friend connections, real-time messaging, photo sharing, and news feed.</p>
+                    <div class="project-tech">
+                        <span class="project-tech-tag">Django</span>
+                        <span class="project-tech-tag">WebSockets</span>
+                        <span class="project-tech-tag">Redis</span>
+                        <span class="project-tech-tag">AWS S3</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="project-card animate-on-scroll">
+                <div class="project-image">
+                    <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="SaaS Platform" loading="lazy">
+                    <div class="project-overlay"><span>SaaS Application</span></div>
+                </div>
+                <div class="project-content">
+                    <h4>SaaS Business Platform</h4>
+                    <p>Develop a subscription-based software service with multi-tenancy, billing system, analytics dashboard, and API integration.</p>
+                    <div class="project-tech">
+                        <span class="project-tech-tag">FastAPI</span>
+                        <span class="project-tech-tag">Vue.js</span>
+                        <span class="project-tech-tag">Stripe</span>
+                        <span class="project-tech-tag">Docker</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- Learning Path -->
+<section class="learning-section">
+    <div class="section-container">
+        <h2 class="section-title animate-on-scroll">Learning Path to Python Full Stack</h2>
+        <p class="section-subtitle animate-on-scroll" style="color:rgba(255,255,255,.85);">Your structured journey to becoming a Python Full Stack Developer</p>
+
+        <div class="learning-path">
+            <div class="learning-stage animate-on-scroll">
+                <div class="stage-icon"><i class="fas fa-code"></i></div>
+                <div class="stage-content">
+                    <h4>Python Fundamentals (Months 1–2)</h4>
+                    <p>Master Python syntax, data structures, OOP, and essential libraries. Build command-line applications.</p>
+                </div>
+            </div>
+
+            <div class="learning-stage animate-on-scroll">
+                <div class="stage-icon"><i class="fas fa-database"></i></div>
+                <div class="stage-content">
+                    <h4>Backend Development (Months 3–4)</h4>
+                    <p>Learn Django/Flask, database design, REST APIs, authentication, and deployment basics.</p>
+                </div>
+            </div>
+
+            <div class="learning-stage animate-on-scroll">
+                <div class="stage-icon"><i class="fas fa-paint-brush"></i></div>
+                <div class="stage-content">
+                    <h4>Frontend Development (Months 5–6)</h4>
+                    <p>Master HTML, CSS, JavaScript, React.js, and frontend-backend integration techniques.</p>
+                </div>
+            </div>
+
+            <div class="learning-stage animate-on-scroll">
+                <div class="stage-icon"><i class="fas fa-rocket"></i></div>
+                <div class="stage-content">
+                    <h4>Advanced &amp; DevOps (Months 7–8)</h4>
+                    <p>Learn microservices, Docker, cloud deployment, CI/CD, performance optimization, and advanced patterns.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- Frameworks & Tools -->
+<section class="frameworks-section">
+    <div class="section-container">
+        <h2 class="section-title animate-on-scroll">Essential Frameworks &amp; Tools</h2>
+        <p class="section-subtitle animate-on-scroll">Industry-standard technologies used by Python Full Stack developers</p>
+
+        <div class="frameworks-grid">
+            <div class="framework-item animate-on-scroll">
+                <div class="framework-logo"><i class="fab fa-python"></i></div>
+                <h4>Django</h4>
+                <span class="framework-category">Backend</span>
+            </div>
+            <div class="framework-item animate-on-scroll">
+                <div class="framework-logo"><i class="fab fa-react"></i></div>
+                <h4>React.js</h4>
+                <span class="framework-category">Frontend</span>
+            </div>
+            <div class="framework-item animate-on-scroll">
+                <div class="framework-logo"><i class="fas fa-database"></i></div>
+                <h4>PostgreSQL</h4>
+                <span class="framework-category">Database</span>
+            </div>
+            <div class="framework-item animate-on-scroll">
+                <div class="framework-logo"><i class="fab fa-docker"></i></div>
+                <h4>Docker</h4>
+                <span class="framework-category">DevOps</span>
+            </div>
+            <div class="framework-item animate-on-scroll">
+                <div class="framework-logo"><i class="fab fa-aws"></i></div>
+                <h4>AWS</h4>
+                <span class="framework-category">Cloud</span>
+            </div>
+            <div class="framework-item animate-on-scroll">
+                <div class="framework-logo"><i class="fab fa-git-alt"></i></div>
+                <h4>Git</h4>
+                <span class="framework-category">Tools</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- Salary & Demand -->
+<section class="salary-section">
+    <div class="section-container">
+        <h2 class="section-title animate-on-scroll">Career Opportunities &amp; Salaries</h2>
+        <p class="section-subtitle animate-on-scroll">High-demand roles with competitive salaries for Python Full Stack developers</p>
+
+        <div class="salary-cards">
+            <div class="salary-card animate-on-scroll">
+                <div class="salary-icon"><i class="fas fa-user-graduate"></i></div>
+                <h4 class="salary-title">Junior Full Stack Developer</h4>
+                <div class="salary-amount">$70K – $90K</div>
+                <p class="salary-description">Entry-level position focusing on feature development, bug fixes, and learning best practices under mentorship.</p>
+            </div>
+
+            <div class="salary-card animate-on-scroll">
+                <div class="salary-icon"><i class="fas fa-user-tie"></i></div>
+                <h4 class="salary-title">Mid-level Full Stack Developer</h4>
+                <div class="salary-amount">$90K – $130K</div>
+                <p class="salary-description">Independent feature development, architectural decisions, and mentoring junior developers.</p>
+            </div>
+
+            <div class="salary-card animate-on-scroll">
+                <div class="salary-icon"><i class="fas fa-user-cog"></i></div>
+                <h4 class="salary-title">Senior Full Stack Developer</h4>
+                <div class="salary-amount">$130K – $180K+</div>
+                <p class="salary-description">Technical leadership, system architecture, team management, and strategic technical decisions.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- CTA -->
+<section class="cta-section">
+    <div class="cta-content">
+        <h2 class="animate-on-scroll">Become a Python Full Stack Developer</h2>
+        <p class="animate-on-scroll">Join our comprehensive Python Full Stack program and learn to build complete web applications from scratch. Get hands-on experience with real projects and expert mentorship.</p>
+
+        <div class="cta-buttons">
+            <a href="{% url 'python' %}" class="cta-button cta-primary animate-on-scroll">View Program Details</a>
+            <a href="{% url 'request_call' %}" class="cta-button cta-secondary animate-on-scroll">Schedule Consultation</a>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    /* ── SCROLL ANIMATIONS ── */
+    const animateOnScroll = () => {
+        document.querySelectorAll('.animate-on-scroll').forEach(el => {
+            if (el.getBoundingClientRect().top < window.innerHeight / 1.3)
+                el.classList.add('animated');
+        });
+    };
+    animateOnScroll();
+    window.addEventListener('scroll', animateOnScroll);
+
+    /* ── MUTE TOGGLE ── */
+    const video    = document.getElementById('heroVideo');
+    const muteBtn  = document.getElementById('muteBtn');
+    const muteIcon = document.getElementById('muteIcon');
+    muteBtn.addEventListener('click', () => {
+        video.muted = !video.muted;
+        muteIcon.className = video.muted ? 'fas fa-volume-mute' : 'fas fa-volume-up';
+    });
+
+    /* ── SMOOTH SCROLL ── */
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            const id = this.getAttribute('href');
+            if (id === '#') return;
+            e.preventDefault();
+            const target = document.querySelector(id);
+            if (target) window.scrollTo({ top: target.offsetTop - 80, behavior: 'smooth' });
+        });
+    });
+
+    /* ── EQUALIZE CARD HEIGHTS ── */
+    const equalizeCards = () => {
+        ['tech-card', 'project-card'].forEach(cls => {
+            const cards = document.querySelectorAll('.' + cls);
+            if (!cards.length) return;
+            cards.forEach(c => c.style.height = 'auto');
+            const max = Math.max(...[...cards].map(c => c.offsetHeight));
+            cards.forEach(c => c.style.height = max + 'px');
+        });
+    };
+    window.addEventListener('load', equalizeCards);
+    window.addEventListener('resize', equalizeCards);
+});
+</script>
+{% endblock %}

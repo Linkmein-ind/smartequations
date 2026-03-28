@@ -1,0 +1,39 @@
+<h2>WhatsApp Chat Dashboard</h2>
+
+<div style="display:flex; gap:40px">
+
+<div style="width:250px">
+<h3>Users</h3>
+
+{% for u in users %}
+  <p><a href="?user={{u.id}}">{{u.phone}}</a></p>
+{% empty %}
+  <p>No messages yet</p>
+{% endfor %}
+</div>
+
+
+<div style="flex:1">
+
+{% if selected %}
+
+<div style="height:400px; overflow:auto; border:1px solid #ccc">
+
+{% for m in messages %}
+<p style="text-align:{% if m.direction == 'outgoing' %}right{% else %}left{% endif %}">
+{{m.message}}
+</p>
+{% endfor %}
+
+</div>
+
+<form method="post" action="/whatsapp/send/{{selected.id}}/">
+{% csrf_token %}
+<input name="message" style="width:80%">
+<button>Send</button>
+</form>
+
+{% endif %}
+
+</div>
+</div>

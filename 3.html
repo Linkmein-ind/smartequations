@@ -1,0 +1,1013 @@
+{% extends "user/base.html" %}
+{% load static %}
+
+{% block title %}Home - Smart Equations{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* ─── VARIABLES ─────────────────────────────────────── */
+  :root {
+    --primary:    #1a2980;
+    --secondary:  #26d0ce;
+    --accent:     #ff6b6b;
+    --bg-light:   #f8f9fa;
+    --text-dark:  #1a1a2e;
+    --text-mid:   #555;
+    --radius-lg:  20px;
+    --radius-md:  12px;
+    --shadow-md:  0 8px 30px rgba(26,41,128,.10);
+    --shadow-lg:  0 20px 60px rgba(26,41,128,.18);
+    --transition: .3s ease;
+  }
+
+  /* ─── DOODLE BG ─────────────────────────────────────── */
+  .page-doodle-bg {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .page-doodle-bg svg {
+    width: 100%;
+    height: 100%;
+    opacity: 0.35;
+    stroke: #0f1a4d;
+    stroke-width: 1.8;
+  }
+  .page-doodle-bg svg circle,
+  .page-doodle-bg svg path,
+  .page-doodle-bg svg line,
+  .page-doodle-bg svg polyline,
+  .page-doodle-bg svg polygon,
+  .page-doodle-bg svg rect,
+  .page-doodle-bg svg ellipse {
+    filter: drop-shadow(0 0 2px rgba(0,0,0,0.2));
+  }
+
+  /* ═══════════════════════════════════════════
+     HERO — InternHub card style
+  ═══════════════════════════════════════════ */
+  .hero-section {
+    margin-bottom: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* Remove old slideshow styles */
+    position: relative;
+    min-height: unset;
+    color: unset;
+    border-radius: unset;
+    overflow: unset;
+    text-align: unset;
+    background: none;
+  }
+
+  /* ── Outer card ── */
+  .intern-hero-card {
+    width: 100%;
+    max-width: 1000px;
+    background: #fff;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow:
+      0 2px 0 rgba(255,255,255,.5) inset,
+      0 32px 100px rgba(20,30,120,.35),
+      0 8px 30px rgba(20,30,120,.15);
+    position: relative;
+    min-height: 480px;
+    animation: cardReveal .8s cubic-bezier(.22,.68,0,1.2) both;
+  }
+
+  /* shimmer sweep */
+  .intern-hero-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 60%; height: 100%;
+    background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,.08) 50%, transparent 60%);
+    z-index: 10;
+    pointer-events: none;
+    animation: shimmer 3.5s 1.2s ease-in-out infinite;
+  }
+
+  /* ── Content layout ── */
+  .intern-hero-body {
+    display: flex;
+    align-items: flex-start;
+    position: relative;
+    z-index: 2;
+    padding: 52px 52px 0 52px;
+    min-height: 480px;
+  }
+
+  /* ── Left text ── */
+  .intern-hero-text {
+    flex: 0 0 340px;
+    padding-top: 8px;
+    position: relative;
+    z-index: 3;
+  }
+
+  /* accent line */
+  .intern-hero-text::before {
+    content: '';
+    display: block;
+    width: 40px; height: 4px;
+    background: linear-gradient(90deg, #3d5afe, #7986cb);
+    border-radius: 2px;
+    margin-bottom: 16px;
+    animation: slideInLeft .6s .3s ease both;
+  }
+
+  .intern-hero-text h1 {
+    font-family: 'Nunito', sans-serif;
+    font-size: 38px;
+    font-weight: 900;
+    color: #1a237e;
+    line-height: 1.1;
+    letter-spacing: -.5px;
+    margin-bottom: 18px;
+    text-transform: uppercase;
+    animation: slideInLeft .65s .2s ease both;
+    /* reset any inherited hero h1 styles */
+    text-shadow: none;
+  }
+
+  .hero-accent-word {
+    color: #3d5afe;
+    position: relative;
+    display: inline-block;
+  }
+  .hero-accent-word::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0; bottom: -2px;
+    height: 4px;
+    background: linear-gradient(90deg, #f5c842, #ffab00);
+    border-radius: 2px;
+    transform: scaleX(0);
+    transform-origin: left;
+    animation: underlineGrow .5s .9s ease forwards;
+  }
+
+  .intern-hero-subtitle {
+    font-size: 13px;
+    color: #5a6080;
+    line-height: 1.75;
+    margin-bottom: 32px;
+    max-width: 280px;
+    animation: slideInLeft .65s .35s ease both;
+  }
+
+  .intern-hero-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, #3d5afe 0%, #1a237e 100%);
+    color: #fff;
+    font-family: 'Nunito', sans-serif;
+    font-size: 13.5px;
+    font-weight: 700;
+    padding: 12px 32px;
+    border-radius: 30px;
+    border: none;
+    cursor: pointer;
+    letter-spacing: .04em;
+    text-decoration: none;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 6px 20px rgba(61,90,254,.4);
+    animation: slideInLeft .65s .48s ease both;
+    transition: transform .2s, box-shadow .2s;
+  }
+  .intern-hero-btn::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,.25) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity .2s;
+  }
+  .intern-hero-btn:hover { transform: translateY(-3px); box-shadow: 0 12px 28px rgba(61,90,254,.5); color: #fff; }
+  .intern-hero-btn:hover::before { opacity: 1; }
+  .intern-hero-btn:active { transform: translateY(-1px); }
+  .intern-hero-btn svg { transition: transform .2s; }
+  .intern-hero-btn:hover svg { transform: translateX(4px); }
+
+  /* ── Right visual ── */
+  .intern-hero-visual {
+    flex: 1;
+    position: relative;
+    align-self: flex-end;
+    height: 380px;
+    margin-right: -52px;
+  }
+  .intern-hero-visual svg.intern-scene {
+    position: absolute;
+    bottom: 0; right: 0;
+    width: 100%; height: auto;
+    animation: sceneReveal .9s .3s ease both;
+  }
+
+  /* ── Wave BG ── */
+  .intern-wave-bg {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    z-index: 1;
+    line-height: 0;
+  }
+  .intern-wave-bg svg { width: 100%; display: block; }
+  .iwave-back  { animation: waveShift 7s ease-in-out infinite alternate; transform-origin: center bottom; }
+  .iwave-front { animation: waveShift 5s 1s ease-in-out infinite alternate-reverse; transform-origin: center bottom; }
+
+  /* ── Character groups float ── */
+  .iperson1 { animation: personFloat 4s ease-in-out infinite;      transform-origin: 165px 310px; }
+  .iperson2 { animation: personFloat 4.5s .8s ease-in-out infinite; transform-origin: 300px 265px; }
+  .iperson3 { animation: personFloat 3.8s 1.5s ease-in-out infinite; transform-origin: 458px 265px; }
+
+  /* ── Speech bubbles ── */
+  .ibubble-chart { animation: bubblePop .5s .8s cubic-bezier(.34,1.56,.64,1) both, bubbleFloat 4s 1.5s ease-in-out infinite;         transform-origin: 103px 99px; }
+  .ibubble-gear  { animation: bubblePop .5s 1.1s cubic-bezier(.34,1.56,.64,1) both, bubbleFloat 4.5s 2s ease-in-out infinite reverse; transform-origin: 364px 119px; }
+  .ibubble-chat  { animation: bubblePop .5s 1.4s cubic-bezier(.34,1.56,.64,1) both, bubbleFloat 4s 1s ease-in-out infinite;          transform-origin: 512px 121px; }
+
+  /* ── Laptop screen ── */
+  .ilaptop-screen { animation: screenGlow 3s 2s ease-in-out infinite; }
+
+  /* ═══════════════════════════════════════════
+     REST OF PAGE STYLES (unchanged)
+  ═══════════════════════════════════════════ */
+
+  .programs-section,
+  .internship-section {
+    margin-bottom: 60px;
+    width: 100%;
+  }
+
+  .section-title {
+    text-align: center;
+    margin-bottom: 40px;
+    color: var(--primary);
+    font-size: 2.4rem;
+    position: relative;
+    padding-bottom: 14px;
+  }
+  .section-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 70px; height: 4px;
+    background: linear-gradient(to right, var(--primary), var(--secondary));
+    border-radius: 2px;
+  }
+
+  .courses-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .course-card {
+    position: sticky;
+    top: 100px;
+    display: grid;
+    grid-template-columns: 380px 1fr 1fr;
+    background: white;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    margin-bottom: 140px;
+    border: 1px solid rgba(26,41,128,.08);
+    overflow: hidden;
+    transition: transform .4s cubic-bezier(.165,.84,.44,1), box-shadow .4s ease;
+  }
+
+  .course-card:nth-child(1) { z-index: 1; }
+  .course-card:nth-child(2) { z-index: 2; }
+  .course-card:nth-child(3) { z-index: 3; }
+  .course-card:nth-child(4) { z-index: 4; }
+  .course-card:nth-child(5) { z-index: 5; }
+  .course-card:nth-child(6) { z-index: 6; }
+
+  .course-card:hover {
+    transform: translateY(-10px) scale(1.01);
+    box-shadow: var(--shadow-lg);
+    z-index: 10;
+  }
+
+  .card-image { position: relative; overflow: hidden; }
+  .card-image img {
+    width: 100%; height: 100%;
+    object-fit: cover; display: block;
+    transition: transform .6s cubic-bezier(.165,.84,.44,1);
+  }
+  .course-card:hover .card-image img { transform: scale(1.06); }
+  .card-image::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(to right, rgba(26,41,128,.55) 0%, rgba(26,41,128,.15) 60%, transparent 100%);
+    z-index: 1;
+  }
+  .card-image .img-badge {
+    position: absolute;
+    top: 18px; left: 18px;
+    z-index: 2;
+    background: var(--accent);
+    color: white;
+    font-size: .75rem; font-weight: 700;
+    letter-spacing: .6px;
+    padding: 5px 13px;
+    border-radius: 30px;
+    box-shadow: 0 4px 12px rgba(255,107,107,.35);
+  }
+
+  .card-left {
+    padding: 32px 28px;
+    display: flex; flex-direction: column;
+    justify-content: space-between;
+    border-right: 1px solid #eef0f8;
+  }
+  .card-meta { margin-bottom: 16px; }
+  .course-number { font-size: .78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--secondary); margin-bottom: 8px; }
+  .card-left h2 { font-size: 1.75rem; font-weight: 700; color: var(--text-dark); margin: 0 0 12px; line-height: 1.2; }
+  .course-duration-row { display: flex; align-items: center; gap: 6px; margin-bottom: 14px; }
+  .duration-label { font-weight: 700; color: var(--text-dark); font-size: .9rem; }
+  .duration-value { color: var(--text-mid); font-size: .9rem; }
+  .course-description { font-size: .95rem; line-height: 1.65; color: var(--text-mid); flex-grow: 1; }
+  .course-description p { margin: 0; }
+  .course-link {
+    display: inline-flex; align-items: center; gap: 8px;
+    margin-top: 20px; padding: 10px 22px;
+    background: linear-gradient(135deg, var(--accent), #ff5252);
+    color: white; text-decoration: none;
+    border-radius: 30px; font-weight: 600; font-size: .9rem;
+    width: fit-content; transition: var(--transition);
+  }
+  .course-link:hover { transform: translateX(4px); box-shadow: 0 8px 20px rgba(255,107,107,.35); }
+
+  .card-right { padding: 32px 28px; background: #fafbff; display: flex; flex-direction: column; gap: 18px; }
+  .checklist-block h4 { font-size: .75rem; text-transform: uppercase; letter-spacing: 1.5px; color: var(--secondary); font-weight: 700; margin: 0 0 12px; }
+  .check-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 9px; }
+  .check-list li { display: flex; align-items: flex-start; gap: 10px; font-size: .92rem; color: var(--text-mid); line-height: 1.4; }
+  .check-list li i { color: var(--secondary); font-size: .95rem; margin-top: 2px; flex-shrink: 0; }
+  .card-divider { border: none; border-top: 1px solid #e8ebf5; margin: 0; }
+  .presentations-row { display: flex; align-items: center; gap: 10px; }
+  .presentations-row i { color: var(--secondary); font-size: 1.4rem; }
+  .presentations-row span { font-size: .92rem; font-weight: 600; color: var(--secondary); }
+  .batch-note { font-size: .8rem; color: #aaa; font-style: italic; text-align: right; margin-top: -6px; }
+  .tools-block h4 { font-size: .75rem; text-transform: uppercase; letter-spacing: 1.5px; color: var(--primary); font-weight: 700; margin: 0 0 10px; }
+  .tools-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+  .tool-item {
+    background: white; padding: 5px 13px; border-radius: 25px; font-size: .82rem;
+    color: var(--primary); font-weight: 600; border: 1.5px solid rgba(26,41,128,.12); transition: var(--transition);
+  }
+  .tool-item:hover { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; transform: translateY(-2px); border-color: transparent; }
+
+  .explore-section { text-align: center; padding: 20px 0 10px; }
+  .explore-btn { display: inline-flex; align-items: center; gap: 10px; padding: 13px 38px; border-radius: 10px; font-weight: 600; font-size: 1.05rem; text-decoration: none; transition: var(--transition); }
+  .explore-btn-primary { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; box-shadow: 0 8px 25px rgba(26,41,128,.2); }
+  .explore-btn-primary:hover { transform: translateY(-3px); box-shadow: 0 14px 35px rgba(26,41,128,.3); }
+  .explore-btn-secondary { background: linear-gradient(135deg, var(--accent), #ff5252); color: white; box-shadow: 0 8px 25px rgba(255,107,107,.2); }
+  .explore-btn-secondary:hover { transform: translateY(-3px); box-shadow: 0 14px 35px rgba(255,107,107,.3); }
+
+  /* ── ROADMAP ── */
+  .roadmap-section {
+    background: linear-gradient(160deg, #dff2f8 0%, #c8eaf6 40%, #d4f0f7 100%);
+    padding: 60px 0 70px; border-radius: var(--radius-lg); margin: 40px 0;
+    position: relative; overflow: hidden;
+  }
+  .roadmap-section::before {
+    content: ''; position: absolute; inset: 0;
+    background-image: radial-gradient(circle, rgba(26,41,128,.12) 1.5px, transparent 1.5px);
+    background-size: 40px 40px; pointer-events: none;
+  }
+  .roadmap-section .section-title { color: var(--primary); margin-bottom: 10px; }
+  .roadmap-section .section-title::after { background: linear-gradient(to right, var(--primary), var(--secondary)); }
+  .roadmap-wrap { position: relative; max-width: 1100px; margin: 0 auto; padding: 0 20px; height: 300px; }
+  .roadmap-svg { position: absolute; left: 0; right: 0; top: 100px; width: 100%; height: 100px; overflow: visible; }
+  .roadmap-svg path { fill: none; stroke: var(--primary); stroke-width: 2.5; stroke-dasharray: 2200; stroke-dashoffset: 2200; animation: draw-wave 2.4s ease forwards .3s; }
+  @keyframes draw-wave { to { stroke-dashoffset: 0; } }
+  .rm-steps { position: absolute; inset: 0; pointer-events: none; }
+  .rm-step { position: absolute; display: flex; flex-direction: column; align-items: center; pointer-events: auto; transform: translateX(-50%); }
+  .rm-step:nth-child(1) { left:  8%; top: 62px; }
+  .rm-step:nth-child(2) { left: 24%; top: 26px; }
+  .rm-step:nth-child(3) { left: 40%; top: 72px; }
+  .rm-step:nth-child(4) { left: 57%; top: 26px; }
+  .rm-step:nth-child(5) { left: 73%; top: 72px; }
+  .rm-step:nth-child(6) { left: 90%; top: 26px; }
+  .rm-icon { width: 80px; height: 80px; border-radius: 50%; background: white; border: 2.5px solid var(--secondary); display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative; transition: transform .35s cubic-bezier(.34,1.56,.64,1), box-shadow .3s ease, border-color .3s ease; box-shadow: 0 4px 18px rgba(26,41,128,.12); }
+  .rm-icon i { font-size: 28px; color: var(--secondary); transition: color .3s ease, transform .35s cubic-bezier(.34,1.56,.64,1); pointer-events: none; }
+  .rm-step:hover .rm-icon { transform: scale(1.15) translateY(-5px); border-color: var(--accent); box-shadow: 0 10px 30px rgba(255,107,107,.25), 0 0 0 6px rgba(255,107,107,.08); }
+  .rm-step:hover .rm-icon i { color: var(--accent); transform: scale(1.1) rotate(-6deg); }
+  .rm-step.active .rm-icon { border-color: var(--accent); box-shadow: 0 6px 20px rgba(255,107,107,.2); }
+  .rm-step.active .rm-icon i { color: var(--accent); }
+  .rm-label { margin-top: 10px; padding: 5px 16px; border-radius: 30px; font-size: .72rem; font-weight: 800; letter-spacing: 1.2px; text-transform: uppercase; color: var(--primary); background: white; border: 1.5px solid rgba(26,41,128,.15); white-space: nowrap; transition: background .3s, color .3s, border-color .3s; }
+  .rm-step.active .rm-label { background: var(--primary); color: white; border-color: var(--primary); }
+  .rm-step:hover .rm-label  { background: var(--accent); color: white; border-color: var(--accent); }
+  .rm-tooltip { position: absolute; bottom: calc(100% + 14px); left: 50%; transform: translateX(-50%) translateY(8px) scale(.92); width: 210px; background: white; border-radius: 14px; padding: 16px 18px 14px; box-shadow: 0 16px 40px rgba(26,41,128,.18), 0 0 0 1px rgba(26,41,128,.06); opacity: 0; pointer-events: none; transition: opacity .25s ease, transform .28s cubic-bezier(.34,1.4,.64,1); z-index: 200; text-align: left; }
+  .rm-tooltip::after { content: ''; position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); border: 5px solid transparent; border-top-color: white; filter: drop-shadow(0 2px 2px rgba(0,0,0,.06)); }
+  .rm-step:hover .rm-tooltip { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); pointer-events: auto; }
+  .rm-tooltip h4 { font-size: .95rem; font-weight: 700; color: var(--primary); margin: 0 0 5px; }
+  .rm-tooltip p  { font-size: .78rem; color: var(--text-mid); line-height: 1.5; margin: 0 0 8px; }
+  .rm-tooltip-tag { font-size: .65rem; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; color: var(--accent); }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+  .rm-step { opacity: 0; animation: stepIn .5s ease forwards; }
+  .rm-step:nth-child(1) { animation-delay: .4s; }
+  .rm-step:nth-child(2) { animation-delay: .6s; }
+  .rm-step:nth-child(3) { animation-delay: .8s; }
+  .rm-step:nth-child(4) { animation-delay: 1.0s; }
+  .rm-step:nth-child(5) { animation-delay: 1.2s; }
+  .rm-step:nth-child(6) { animation-delay: 1.4s; }
+  @keyframes stepIn { from { opacity: 0; transform: translateX(-50%) translateY(20px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
+
+  /* Hero animations */
+  @keyframes cardReveal   { from { opacity: 0; transform: scale(.95) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+  @keyframes slideInLeft  { from { opacity: 0; transform: translateX(-28px); } to { opacity: 1; transform: translateX(0); } }
+  @keyframes sceneReveal  { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes underlineGrow { to { transform: scaleX(1); } }
+  @keyframes waveShift    { 0% { transform: scaleX(1) translateX(0); } 100% { transform: scaleX(1.04) translateX(-18px); } }
+  @keyframes shimmer      { 0% { left: -100%; } 60% { left: 140%; } 100% { left: 140%; } }
+  @keyframes personFloat  { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
+  @keyframes bubblePop    { from { opacity: 0; transform: scale(0.4); } to { opacity: 1; transform: scale(1); } }
+  @keyframes bubbleFloat  { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-6px) rotate(1.5deg); } }
+  @keyframes screenGlow   { 0%, 100% { filter: brightness(1); } 50% { filter: brightness(1.3) drop-shadow(0 0 6px rgba(61,90,254,.6)); } }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 1050px) { .course-card { grid-template-columns: 300px 1fr 1fr; } }
+  @media (max-width: 900px) { .course-card { grid-template-columns: 1fr 1fr; } .card-image { display: none; } .card-left { border-right: 1px solid #eef0f8; } }
+  @media (max-width: 700px) {
+    .course-card { grid-template-columns: 1fr; }
+    .card-left  { border-right: none; border-bottom: 1px solid #eef0f8; }
+    .card-right { background: white; }
+    .intern-hero-body { flex-direction: column; padding: 40px 28px 0; }
+    .intern-hero-text { flex: unset; width: 100%; }
+    .intern-hero-visual { width: 100%; height: 260px; margin-right: 0; }
+    .roadmap-wrap { height: auto; padding: 10px 20px 20px; }
+    .roadmap-svg  { display: none; }
+    .rm-steps     { position: static; display: flex; flex-direction: column; gap: 24px; align-items: center; }
+    .rm-step      { position: static; transform: none; width: 100%; max-width: 280px; flex-direction: row; gap: 16px; align-items: center; }
+    .rm-step:nth-child(n) { animation: none; opacity: 1; }
+    .rm-icon      { flex-shrink: 0; width: 64px; height: 64px; }
+    .rm-icon i    { font-size: 22px; }
+    .rm-label     { display: none; }
+    .rm-tooltip   { position: static; transform: none; opacity: 1; pointer-events: auto; width: auto; flex: 1; box-shadow: none; padding: 0; border-radius: 0; }
+    .rm-tooltip::after { display: none; }
+    .rm-step:hover .rm-tooltip { transform: none; }
+  }
+  @media (max-width: 576px) { .card-left, .card-right { padding: 24px 20px; } .card-left h2 { font-size: 1.5rem; } }
+  @media (max-width: 480px) { .intern-hero-text h1 { font-size: 28px; } }
+</style>
+{% endblock %}
+
+
+{% block content %}
+
+<!-- ═══ DOODLE BG ═══ -->
+<div class="page-doodle-bg" aria-hidden="true">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 900"
+       preserveAspectRatio="xMidYMid slice" fill="none"
+       stroke="#0f1a4d" stroke-width="1.8"
+       stroke-linecap="round" stroke-linejoin="round">
+    <!-- Neural Network -->
+    <circle cx="70" cy="60" r="8"/><circle cx="110" cy="40" r="8"/><circle cx="150" cy="60" r="8"/><circle cx="110" cy="80" r="8"/>
+    <line x1="70" y1="60" x2="110" y2="40"/><line x1="70" y1="60" x2="110" y2="80"/><line x1="110" y1="40" x2="150" y2="60"/><line x1="110" y1="80" x2="150" y2="60"/>
+    <circle cx="260" cy="60" r="22"/><path d="M245 50 Q260 30 275 50 M230 65 Q260 45 290 65 M240 80 Q260 65 280 80"/>
+    <polyline points="330,80 360,50 390,70 420,40"/><circle cx="360" cy="50" r="3"/><circle cx="390" cy="70" r="3"/><circle cx="420" cy="40" r="3"/>
+    <rect x="470" y="40" width="45" height="40" rx="8"/><circle cx="485" cy="60" r="4"/><circle cx="500" cy="60" r="4"/>
+    <path d="M570 45 Q550 45 550 65 Q550 85 575 85 Q590 85 595 70 Q615 70 615 55 Q615 40 590 40 Q580 40 575 45 Z"/>
+    <polyline points="670,40 650,60 670,80"/><polyline points="710,40 730,60 710,80"/>
+    <ellipse cx="800" cy="40" rx="25" ry="10"/><rect x="775" y="40" width="50" height="35"/><ellipse cx="800" cy="75" rx="25" ry="10"/>
+    <rect x="890" y="35" width="30" height="30"/><circle cx="940" cy="50" r="12"/><polygon points="980,35 1000,50 980,65"/>
+    <line x1="920" y1="50" x2="928" y2="50"/><line x1="952" y1="50" x2="968" y2="50"/>
+    <circle cx="1080" cy="50" r="6"/><circle cx="1120" cy="70" r="6"/><circle cx="1160" cy="40" r="6"/><circle cx="1140" cy="80" r="6"/>
+    <line x1="1086" y1="50" x2="1114" y2="68"/><line x1="1126" y1="72" x2="1154" y2="42"/>
+    <rect x="1230" y="35" width="50" height="50" rx="5"/><line x1="1235" y1="45" x2="1275" y2="45"/><line x1="1235" y1="55" x2="1275" y2="55"/><line x1="1235" y1="65" x2="1275" y2="65"/><line x1="1245" y1="40" x2="1245" y2="80"/><line x1="1265" y1="40" x2="1265" y2="80"/>
+    <path d="M0 140 Q100 120 200 140 Q300 160 400 140 Q500 120 600 140 Q700 160 800 140 Q900 120 1000 140 Q1100 160 1200 140 Q1300 120 1400 140"/>
+    <path d="M0 320 Q150 300 300 320 Q450 340 600 320 Q750 300 900 320 Q1050 340 1200 320 Q1350 300 1400 320"/>
+    <path d="M0 480 Q150 460 300 480 Q450 500 600 480 Q750 460 900 480 Q1050 500 1200 480 Q1350 460 1400 480"/>
+    <path d="M0 620 Q150 600 300 620 Q450 640 600 620 Q750 600 900 620 Q1050 640 1200 620 Q1350 600 1400 620"/>
+  </svg>
+</div>
+
+
+<!-- ═══════════════════════════
+     HERO — InternHub Card
+═══════════════════════════ -->
+<section class="hero-section">
+  <div class="intern-hero-card">
+
+    <!-- Wave background -->
+    <div class="intern-wave-bg">
+      <svg viewBox="0 0 960 280" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="iwg" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%"   stop-color="#3d5afe"/>
+            <stop offset="100%" stop-color="#0d1b4b"/>
+          </linearGradient>
+        </defs>
+        <path class="iwave-back"  d="M0,180 Q120,80 280,140 Q420,195 560,110 Q680,40 960,90 L960,280 L0,280 Z" fill="url(#iwg)" opacity=".55"/>
+        <path class="iwave-front" d="M0,210 Q160,120 320,170 Q480,220 600,140 Q740,55 960,120 L960,280 L0,280 Z" fill="url(#iwg)"/>
+        <rect x="0" y="240" width="960" height="40" fill="#1a237e"/>
+      </svg>
+    </div>
+
+    <!-- Body -->
+    <div class="intern-hero-body">
+
+      <!-- Left text -->
+      <div class="intern-hero-text">
+        <h1>Find Your<br><span class="hero-accent-word">Dream</span><br>Internship</h1>
+        <p class="intern-hero-subtitle">
+          Explore thousands of internship opportunities across top companies. Build real-world skills, grow your network, and launch the career you've always imagined.
+        </p>
+        <a class="intern-hero-btn" href="#internship-section">
+          Explore Now
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </a>
+      </div>
+
+      <!-- Right: animated illustration -->
+      <div class="intern-hero-visual">
+        <svg class="intern-scene" viewBox="0 0 580 380" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+          <!-- DESK -->
+          <rect x="195" y="218" width="270" height="12" rx="6" fill="#bdbdbd"/>
+          <rect x="220" y="230" width="12" height="90" rx="4" fill="#9e9e9e"/>
+          <rect x="430" y="230" width="12" height="90" rx="4" fill="#9e9e9e"/>
+          <rect x="215" y="282" width="230" height="8"  rx="4" fill="#bdbdbd"/>
+          <!-- Chair -->
+          <rect x="295" y="275" width="10" height="55" rx="4" fill="#555"/>
+          <ellipse cx="300" cy="275" rx="28" ry="7" fill="#444"/>
+          <path d="M272,275 L272,240 Q272,230 282,230 L318,230 Q328,230 328,240 L328,275 Z" fill="#555"/>
+          <circle cx="274" cy="332" r="6" fill="#333"/>
+          <circle cx="300" cy="335" r="6" fill="#333"/>
+          <circle cx="326" cy="332" r="6" fill="#333"/>
+
+          <!-- LAPTOP -->
+          <rect x="310" y="178" width="118" height="42" rx="5" fill="#e0e0e0"/>
+          <rect class="ilaptop-screen" x="315" y="182" width="108" height="34" rx="4" fill="#3d5afe" opacity=".85"/>
+          <rect x="322" y="188" width="50" height="3" rx="1.5" fill="#fff" opacity=".7"/>
+          <rect x="322" y="195" width="36" height="3" rx="1.5" fill="#fff" opacity=".45"/>
+          <rect x="322" y="202" width="60" height="3" rx="1.5" fill="#fff" opacity=".28"/>
+          <rect x="305" y="218" width="128" height="5" rx="2.5" fill="#bdbdbd"/>
+
+          <!-- PERSON 1 -->
+          <g class="iperson1">
+            <ellipse cx="165" cy="316" rx="38" ry="9" fill="#1a237e" opacity=".18"/>
+            <path d="M148,272 L138,318" stroke="#1a237e" stroke-width="20" stroke-linecap="round"/>
+            <path d="M182,272 L192,318" stroke="#1a237e" stroke-width="20" stroke-linecap="round"/>
+            <ellipse cx="136" cy="320" rx="18" ry="7" fill="#111"/>
+            <ellipse cx="194" cy="320" rx="18" ry="7" fill="#111"/>
+            <path d="M128,195 Q143,170 165,165 Q187,170 202,195 L205,274 L125,274 Z" fill="#e07b2e"/>
+            <path d="M153,165 L165,165 L177,165 L173,205 L157,205 Z" fill="#fff" opacity=".6"/>
+            <path d="M165,168 L169.5,200 L165,206 L160.5,200 Z" fill="#1a237e"/>
+            <path d="M128,195 Q100,178 82,148" stroke="#f4c5a0" stroke-width="20" stroke-linecap="round"/>
+            <path d="M202,195 Q222,202 238,215" stroke="#e07b2e" stroke-width="18" stroke-linecap="round"/>
+            <rect x="158" y="150" width="14" height="20" rx="7" fill="#f4c5a0"/>
+            <circle cx="165" cy="135" r="30" fill="#f4c5a0"/>
+            <ellipse cx="165" cy="112" rx="30" ry="19" fill="#4a2f1a"/>
+            <ellipse cx="157" cy="136" rx="3" ry="3.5" fill="#e8a882"/>
+            <ellipse cx="173" cy="136" rx="3" ry="3.5" fill="#e8a882"/>
+            <path d="M158,145 Q165,150 172,145" stroke="#c97b50" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          </g>
+
+          <!-- CHART BUBBLE -->
+          <g class="ibubble-chart">
+            <rect x="58" y="68" width="90" height="62" rx="12" fill="#aab4f0" opacity=".9"/>
+            <path d="M80,128 L96,144 L112,128" fill="#aab4f0" opacity=".9"/>
+            <rect x="70"  y="108" width="10" height="14" rx="2" fill="#fff" opacity=".85"/>
+            <rect x="84"  y="98"  width="10" height="24" rx="2" fill="#fff" opacity=".85"/>
+            <rect x="98"  y="88"  width="10" height="34" rx="2" fill="#fff" opacity=".85"/>
+            <rect x="112" y="96"  width="10" height="26" rx="2" fill="#fff" opacity=".85"/>
+            <polyline points="70,108 84,98 98,88 128,76" stroke="#f5c842" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          </g>
+
+          <!-- PERSON 2 -->
+          <g class="iperson2">
+            <ellipse cx="300" cy="280" rx="30" ry="7" fill="#1a237e" opacity=".15"/>
+            <path d="M268,220 Q282,200 300,195 Q318,200 332,220 L334,265 L266,265 Z" fill="#1a237e"/>
+            <rect x="293" y="182" width="14" height="18" rx="7" fill="#c9855a"/>
+            <circle cx="300" cy="168" r="28" fill="#c9855a"/>
+            <ellipse cx="300" cy="147" rx="28" ry="16" fill="#2c1a0e"/>
+            <path d="M268,218 Q248,232 232,244" stroke="#c9855a" stroke-width="16" stroke-linecap="round"/>
+            <path d="M332,218 Q352,232 370,242" stroke="#1a237e" stroke-width="16" stroke-linecap="round"/>
+          </g>
+
+          <!-- GEAR BUBBLE -->
+          <g class="ibubble-gear">
+            <rect x="320" y="78" width="88" height="62" rx="12" fill="#f9cfdf" opacity=".9"/>
+            <path d="M340,138 L364,154 L388,138" fill="#f9cfdf" opacity=".9"/>
+            <circle cx="364" cy="106" r="16" fill="none" stroke="#e8a040" stroke-width="3.5"/>
+            <circle cx="364" cy="106" r="7"  fill="#e8a040"/>
+            <rect x="360" y="87"  width="8" height="10" rx="3" fill="#e8a040"/>
+            <rect x="360" y="115" width="8" height="10" rx="3" fill="#e8a040"/>
+            <rect x="345" y="102" width="10" height="8"  rx="3" fill="#e8a040"/>
+            <rect x="373" y="102" width="10" height="8"  rx="3" fill="#e8a040"/>
+          </g>
+
+          <!-- PERSON 3 -->
+          <g class="iperson3">
+            <ellipse cx="458" cy="285" rx="32" ry="8" fill="#1a237e" opacity=".15"/>
+            <path d="M436,262 L430,315" stroke="#1a237e" stroke-width="18" stroke-linecap="round"/>
+            <path d="M478,262 L490,305" stroke="#1a237e" stroke-width="18" stroke-linecap="round"/>
+            <ellipse cx="428" cy="318" rx="16" ry="6.5" fill="#8d6e63"/>
+            <ellipse cx="492" cy="308" rx="16" ry="6.5" fill="#8d6e63"/>
+            <path d="M426,215 Q440,196 458,191 Q476,196 490,215 L493,264 L423,264 Z" fill="#c0882e"/>
+            <rect x="451" y="178" width="14" height="18" rx="7" fill="#f4c5a0"/>
+            <circle cx="458" cy="163" r="27" fill="#f4c5a0"/>
+            <path d="M431,154 Q433,126 458,120 Q483,126 485,154 Q489,184 484,210" fill="#3d1f0e"/>
+            <path d="M426,214 Q406,228 388,242" stroke="#f4c5a0" stroke-width="15" stroke-linecap="round"/>
+            <path d="M490,214 Q508,222 522,232" stroke="#c0882e" stroke-width="15" stroke-linecap="round"/>
+          </g>
+
+          <!-- CHAT BUBBLE -->
+          <g class="ibubble-chat">
+            <rect x="472" y="96" width="80" height="50" rx="12" fill="#d6e4fb" opacity=".9"/>
+            <path d="M480,144 L496,160 L512,144" fill="#d6e4fb" opacity=".9"/>
+            <rect x="482" y="110" width="48" height="4" rx="2" fill="#6880cc" opacity=".7"/>
+            <rect x="482" y="120" width="34" height="4" rx="2" fill="#6880cc" opacity=".5"/>
+            <rect x="482" y="130" width="42" height="4" rx="2" fill="#6880cc" opacity=".35"/>
+          </g>
+
+        </svg>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════ TRAINING ═══════════════════════════ -->
+<section class="programs-section" id="training-section">
+  <div class="container">
+    <h2 class="section-title animate-on-scroll">Our Training Programs</h2>
+  </div>
+
+  <div class="courses-container">
+
+    <div class="course-card">
+      <div class="card-image">
+        <img src="{% static 'images/Data Science.png' %}" alt="Data Science with AI">
+        <span class="img-badge">Most Popular</span>
+      </div>
+      <div class="card-left">
+        <div class="card-meta">
+          <div class="course-number">Course 1</div>
+          <h2>Data Science with AI</h2>
+          <div class="course-duration-row"><span class="duration-label">Duration:</span><span class="duration-value">6 Months</span></div>
+        </div>
+        <div class="course-description"><p>Master data analysis, machine learning, and AI with hands-on projects and industry mentorship. Work on real datasets and build models that solve business problems end-to-end.</p></div>
+        <a href="{% url 'data_science' %}" class="course-link">Explore <i class="fas fa-arrow-right"></i></a>
+      </div>
+      <div class="card-right">
+        <div class="checklist-block">
+          <h4>Projects Briefing</h4>
+          <ul class="check-list">
+            <li><i class="fas fa-check"></i> Meeting with industry experts</li>
+            <li><i class="fas fa-check"></i> Making models live with real datasets</li>
+            <li><i class="fas fa-check"></i> Model development &amp; deployment</li>
+            <li><i class="fas fa-check"></i> Performance tuning &amp; optimization</li>
+          </ul>
+        </div>
+        <hr class="card-divider">
+        <div class="presentations-row"><i class="fas fa-bullseye"></i><span>Presentations and Mock Interviews</span></div>
+        <p class="batch-note">*Projects change every batch</p>
+        <hr class="card-divider">
+        <div class="tools-block"><h4>Tools &amp; Tech</h4><div class="tools-grid"><span class="tool-item">Python</span><span class="tool-item">TensorFlow</span><span class="tool-item">Scikit-learn</span><span class="tool-item">Pandas</span><span class="tool-item">Jupyter</span></div></div>
+      </div>
+    </div>
+
+    <div class="course-card">
+      <div class="card-image">
+        <img src="{% static 'images/Python.png' %}" alt="Python Full Stack">
+        <span class="img-badge">Industry Recommended</span>
+      </div>
+      <div class="card-left">
+        <div class="card-meta">
+          <div class="course-number">Course 2</div>
+          <h2>Python Full Stack</h2>
+          <div class="course-duration-row"><span class="duration-label">Duration:</span><span class="duration-value">5 Months</span></div>
+        </div>
+        <div class="course-description"><p>Become a full-stack developer with Python, Django, and modern frontend technologies. Build and deploy production-grade web applications from database design to responsive UI.</p></div>
+        <a href="{% url 'python' %}" class="course-link">Explore <i class="fas fa-arrow-right"></i></a>
+      </div>
+      <div class="card-right">
+        <div class="checklist-block">
+          <h4>Projects Briefing</h4>
+          <ul class="check-list">
+            <li><i class="fas fa-check"></i> Requirements analysis &amp; planning</li>
+            <li><i class="fas fa-check"></i> Building live web applications</li>
+            <li><i class="fas fa-check"></i> Development &amp; deployment pipeline</li>
+            <li><i class="fas fa-check"></i> Code review with senior developers</li>
+          </ul>
+        </div>
+        <hr class="card-divider">
+        <div class="presentations-row"><i class="fas fa-bullseye"></i><span>Presentations and Mock Interviews</span></div>
+        <p class="batch-note">*Projects change every batch</p>
+        <hr class="card-divider">
+        <div class="tools-block"><h4>Tools &amp; Tech</h4><div class="tools-grid"><span class="tool-item">Python</span><span class="tool-item">Django</span><span class="tool-item">React.js</span><span class="tool-item">PostgreSQL</span><span class="tool-item">Docker</span></div></div>
+      </div>
+    </div>
+
+    <div class="course-card">
+      <div class="card-image">
+        <img src="{% static 'images/Java.png' %}" alt="Java Full Stack">
+        <span class="img-badge">Enterprise Ready</span>
+      </div>
+      <div class="card-left">
+        <div class="card-meta">
+          <div class="course-number">Course 3</div>
+          <h2>Java Full Stack</h2>
+          <div class="course-duration-row"><span class="duration-label">Duration:</span><span class="duration-value">6 Months</span></div>
+        </div>
+        <div class="course-description"><p>Build enterprise-grade applications with Java, Spring Framework, and microservices architecture. Learn patterns used by top tech companies worldwide.</p></div>
+        <a href="{% url 'java' %}" class="course-link">Explore <i class="fas fa-arrow-right"></i></a>
+      </div>
+      <div class="card-right">
+        <div class="checklist-block">
+          <h4>Projects Briefing</h4>
+          <ul class="check-list">
+            <li><i class="fas fa-check"></i> Enterprise requirements gathering</li>
+            <li><i class="fas fa-check"></i> Microservices architecture design</li>
+            <li><i class="fas fa-check"></i> API development &amp; integration</li>
+            <li><i class="fas fa-check"></i> Architecture presentations &amp; reviews</li>
+          </ul>
+        </div>
+        <hr class="card-divider">
+        <div class="presentations-row"><i class="fas fa-bullseye"></i><span>Presentations and Mock Interviews</span></div>
+        <p class="batch-note">*Projects change every batch</p>
+        <hr class="card-divider">
+        <div class="tools-block"><h4>Tools &amp; Tech</h4><div class="tools-grid"><span class="tool-item">Java</span><span class="tool-item">Spring Boot</span><span class="tool-item">Angular</span><span class="tool-item">MySQL</span><span class="tool-item">Maven</span></div></div>
+      </div>
+    </div>
+
+    <div class="course-card">
+      <div class="card-image">
+        <img src="{% static 'images/Cloud.png' %}" alt="Cloud and DevOps">
+        <span class="img-badge">High Demand</span>
+      </div>
+      <div class="card-left">
+        <div class="card-meta">
+          <div class="course-number">Course 4</div>
+          <h2>Cloud &amp; DevOps</h2>
+          <div class="course-duration-row"><span class="duration-label">Duration:</span><span class="duration-value">4 Months</span></div>
+        </div>
+        <div class="course-description"><p>Master cloud platforms and DevOps practices with AWS, Docker, and Kubernetes. Automate infrastructure and build robust CI/CD pipelines for real-world deployments.</p></div>
+        <a href="{% url 'cloud' %}" class="course-link">Explore <i class="fas fa-arrow-right"></i></a>
+      </div>
+      <div class="card-right">
+        <div class="checklist-block">
+          <h4>Projects Briefing</h4>
+          <ul class="check-list">
+            <li><i class="fas fa-check"></i> Infrastructure planning &amp; design</li>
+            <li><i class="fas fa-check"></i> Setting up live cloud environments</li>
+            <li><i class="fas fa-check"></i> Implementation &amp; automation scripts</li>
+            <li><i class="fas fa-check"></i> Architecture reviews &amp; best practices</li>
+          </ul>
+        </div>
+        <hr class="card-divider">
+        <div class="presentations-row"><i class="fas fa-bullseye"></i><span>Presentations and Mock Interviews</span></div>
+        <p class="batch-note">*Projects change every batch</p>
+        <hr class="card-divider">
+        <div class="tools-block"><h4>Tools &amp; Tech</h4><div class="tools-grid"><span class="tool-item">AWS</span><span class="tool-item">Docker</span><span class="tool-item">Kubernetes</span><span class="tool-item">Jenkins</span><span class="tool-item">Terraform</span></div></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="explore-section">
+    <a href="{% url 'training' %}" class="explore-btn explore-btn-primary">
+      <i class="fas fa-book-open"></i> View All Programs
+    </a>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════ INTERNSHIPS ═══════════════════════════ -->
+<section class="internship-section" id="internship-section">
+  <div class="container">
+    <h2 class="section-title animate-on-scroll">Internship Programs</h2>
+  </div>
+
+  <div class="courses-container">
+
+    <div class="course-card">
+      <div class="card-image">
+        <img src="https://images.unsplash.com/photo-1547658719-da2b51169166?auto=format&fit=crop&w=800&q=80" alt="Web Development">
+        <span class="img-badge">Live Projects</span>
+      </div>
+      <div class="card-left">
+        <div class="card-meta">
+          <div class="course-number">Internship 1</div>
+          <h2>Web Development</h2>
+          <div class="course-duration-row"><span class="duration-label">Duration:</span><span class="duration-value">3–6 Months</span></div>
+        </div>
+        <div class="course-description"><p>Build responsive websites and web applications for real clients using modern JavaScript frameworks. Experience the full development lifecycle from requirement gathering to launch.</p></div>
+        <a href="{% url 'internship_details' %}?type=web" class="course-link">View Details <i class="fas fa-arrow-right"></i></a>
+      </div>
+      <div class="card-right">
+        <div class="checklist-block">
+          <h4>Internship Structure</h4>
+          <ul class="check-list">
+            <li><i class="fas fa-check"></i> Project briefing with client teams</li>
+            <li><i class="fas fa-check"></i> Live website development</li>
+            <li><i class="fas fa-check"></i> Weekly code reviews</li>
+            <li><i class="fas fa-check"></i> Deployment &amp; client handover</li>
+          </ul>
+        </div>
+        <hr class="card-divider">
+        <div class="presentations-row"><i class="fas fa-bullseye"></i><span>Presentations and Mock Interviews</span></div>
+        <p class="batch-note">*Projects change every batch</p>
+        <hr class="card-divider">
+        <div class="tools-block"><h4>Tech Stack</h4><div class="tools-grid"><span class="tool-item">React.js</span><span class="tool-item">Node.js</span><span class="tool-item">MongoDB</span><span class="tool-item">Express</span></div></div>
+      </div>
+    </div>
+
+    <div class="course-card">
+      <div class="card-image">
+        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80" alt="Data Science">
+        <span class="img-badge">Real Data</span>
+      </div>
+      <div class="card-left">
+        <div class="card-meta">
+          <div class="course-number">Internship 2</div>
+          <h2>Data Science</h2>
+          <div class="course-duration-row"><span class="duration-label">Duration:</span><span class="duration-value">4–6 Months</span></div>
+        </div>
+        <div class="course-description"><p>Work on real data analysis and machine learning projects sourced from industry partners. Develop models, run experiments, and communicate findings through compelling data stories.</p></div>
+        <a href="{% url 'internship_details' %}?type=data" class="course-link">View Details <i class="fas fa-arrow-right"></i></a>
+      </div>
+      <div class="card-right">
+        <div class="checklist-block">
+          <h4>Internship Structure</h4>
+          <ul class="check-list">
+            <li><i class="fas fa-check"></i> Data project briefing &amp; scoping</li>
+            <li><i class="fas fa-check"></i> EDA &amp; model development</li>
+            <li><i class="fas fa-check"></i> Data storytelling sessions</li>
+            <li><i class="fas fa-check"></i> Final model presentation</li>
+          </ul>
+        </div>
+        <hr class="card-divider">
+        <div class="presentations-row"><i class="fas fa-bullseye"></i><span>Presentations and Mock Interviews</span></div>
+        <p class="batch-note">*Projects change every batch</p>
+        <hr class="card-divider">
+        <div class="tools-block"><h4>Tech Stack</h4><div class="tools-grid"><span class="tool-item">Python</span><span class="tool-item">Pandas</span><span class="tool-item">Scikit-learn</span><span class="tool-item">Tableau</span></div></div>
+      </div>
+    </div>
+
+    <div class="course-card">
+      <div class="card-image">
+        <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80" alt="Cloud and DevOps">
+        <span class="img-badge">Cloud Native</span>
+      </div>
+      <div class="card-left">
+        <div class="card-meta">
+          <div class="course-number">Internship 3</div>
+          <h2>Cloud &amp; DevOps</h2>
+          <div class="course-duration-row"><span class="duration-label">Duration:</span><span class="duration-value">3–5 Months</span></div>
+        </div>
+        <div class="course-description"><p>Learn cloud infrastructure and DevOps practices through hands-on projects on AWS. Build and maintain CI/CD pipelines and containerised applications used by real teams.</p></div>
+        <a href="{% url 'internship_details' %}?type=cloud" class="course-link">View Details <i class="fas fa-arrow-right"></i></a>
+      </div>
+      <div class="card-right">
+        <div class="checklist-block">
+          <h4>Internship Structure</h4>
+          <ul class="check-list">
+            <li><i class="fas fa-check"></i> Infrastructure planning sessions</li>
+            <li><i class="fas fa-check"></i> Cloud environment setup</li>
+            <li><i class="fas fa-check"></i> Pipeline implementation</li>
+            <li><i class="fas fa-check"></i> Architecture reviews</li>
+          </ul>
+        </div>
+        <hr class="card-divider">
+        <div class="presentations-row"><i class="fas fa-bullseye"></i><span>Presentations and Mock Interviews</span></div>
+        <p class="batch-note">*Projects change every batch</p>
+        <hr class="card-divider">
+        <div class="tools-block"><h4>Tech Stack</h4><div class="tools-grid"><span class="tool-item">AWS</span><span class="tool-item">Docker</span><span class="tool-item">Kubernetes</span><span class="tool-item">Jenkins</span></div></div>
+      </div>
+    </div>
+
+    <div class="course-card">
+      <div class="card-image">
+        <img src="https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?auto=format&fit=crop&w=800&q=80" alt="Mobile Development">
+        <span class="img-badge">App Store</span>
+      </div>
+      <div class="card-left">
+        <div class="card-meta">
+          <div class="course-number">Internship 4</div>
+          <h2>Mobile Development</h2>
+          <div class="course-duration-row"><span class="duration-label">Duration:</span><span class="duration-value">3–6 Months</span></div>
+        </div>
+        <div class="course-description"><p>Develop cross-platform mobile applications using React Native and Flutter. Work on real apps published to the Google Play Store and Apple App Store.</p></div>
+        <a href="{% url 'internship_details' %}?type=mobile" class="course-link">View Details <i class="fas fa-arrow-right"></i></a>
+      </div>
+      <div class="card-right">
+        <div class="checklist-block">
+          <h4>Internship Structure</h4>
+          <ul class="check-list">
+            <li><i class="fas fa-check"></i> App requirement analysis</li>
+            <li><i class="fas fa-check"></i> UI/UX design &amp; prototyping</li>
+            <li><i class="fas fa-check"></i> Development &amp; testing</li>
+            <li><i class="fas fa-check"></i> App store submission &amp; demo</li>
+          </ul>
+        </div>
+        <hr class="card-divider">
+        <div class="presentations-row"><i class="fas fa-bullseye"></i><span>Presentations and Mock Interviews</span></div>
+        <p class="batch-note">*Projects change every batch</p>
+        <hr class="card-divider">
+        <div class="tools-block"><h4>Tech Stack</h4><div class="tools-grid"><span class="tool-item">React Native</span><span class="tool-item">Flutter</span><span class="tool-item">Firebase</span><span class="tool-item">Redux</span></div></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="explore-section">
+    <a href="{% url 'internship' %}" class="explore-btn explore-btn-secondary">
+      <i class="fas fa-briefcase"></i> View All Internships
+    </a>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════ ROADMAP ═══════════════════════════ -->
+<section class="roadmap-section">
+  <div class="container">
+    <h2 class="section-title animate-on-scroll">Your Learning Journey</h2>
+    <div class="roadmap-wrap animate-on-scroll">
+      <svg class="roadmap-svg" viewBox="0 0 1060 100" preserveAspectRatio="none">
+        <path d="M0 60 Q90 10 160 50 T320 50 T480 50 T640 50 T800 50 T1060 50"/>
+      </svg>
+      <div class="rm-steps">
+        <div class="rm-step active">
+          <div class="rm-icon"><i class="fas fa-user-plus"></i></div>
+          <div class="rm-tooltip"><h4>Register</h4><p>Start your journey — enrol, choose your program, and meet your mentor.</p><span class="rm-tooltip-tag">Step 1 · Getting Started</span></div>
+          <span class="rm-label">Register</span>
+        </div>
+        <div class="rm-step">
+          <div class="rm-icon"><i class="fas fa-graduation-cap"></i></div>
+          <div class="rm-tooltip"><h4>Training</h4><p>Attend expert-led live sessions, access recordings, and complete weekly assignments.</p><span class="rm-tooltip-tag">Step 2 · Learning Phase</span></div>
+          <span class="rm-label">Training</span>
+        </div>
+        <div class="rm-step">
+          <div class="rm-icon"><i class="fas fa-folder-open"></i></div>
+          <div class="rm-tooltip"><h4>Projects</h4><p>Work on real industry-briefed projects with real datasets, guided by senior mentors.</p><span class="rm-tooltip-tag">Step 3 · Hands-on Work</span></div>
+          <span class="rm-label">Projects</span>
+        </div>
+        <div class="rm-step">
+          <div class="rm-icon"><i class="fas fa-certificate"></i></div>
+          <div class="rm-tooltip"><h4>Certification</h4><p>Earn an industry-recognised certificate after assessments and your final presentation.</p><span class="rm-tooltip-tag">Step 4 · Achievement</span></div>
+          <span class="rm-label">Certification</span>
+        </div>
+        <div class="rm-step">
+          <div class="rm-icon"><i class="fas fa-laptop-code"></i></div>
+          <div class="rm-tooltip"><h4>Skills</h4><p>Build your portfolio, polish GitHub, craft a standout resume, and do mock interviews.</p><span class="rm-tooltip-tag">Step 5 · Career Prep</span></div>
+          <span class="rm-label">Skills</span>
+        </div>
+        <div class="rm-step">
+          <div class="rm-icon"><i class="fas fa-briefcase"></i></div>
+          <div class="rm-tooltip"><h4>Placement</h4><p>Connect with hiring partners, get referrals, and land your first tech role.</p><span class="rm-tooltip-tag">Step 6 · Career Begins</span></div>
+          <span class="rm-label">Placement</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}
+
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const animateOnScroll = () => {
+    document.querySelectorAll('.animate-on-scroll').forEach(el => {
+      if (el.getBoundingClientRect().top < window.innerHeight / 1.2)
+        el.classList.add('animated');
+    });
+  };
+  animateOnScroll();
+  window.addEventListener('scroll', animateOnScroll);
+
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+      const id = this.getAttribute('href');
+      if (id === '#') return;
+      e.preventDefault();
+      const target = document.querySelector(id);
+      if (target) window.scrollTo({ top: target.offsetTop - 80, behavior: 'smooth' });
+    });
+  });
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => e.target.classList.toggle('in-view', e.isIntersecting));
+  }, { threshold: 0.3 });
+  document.querySelectorAll('.course-card').forEach(c => observer.observe(c));
+});
+</script>
+{% endblock %}

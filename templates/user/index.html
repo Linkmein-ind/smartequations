@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Training Roadmap Advanced</title>
+
+    <script src="https://kit.fontawesome.com/6b0f9d8c6b.js" crossorigin="anonymous"></script>
+
+    <style>
+        /* =========================
+           GLOBAL
+        ========================= */
+        body {
+            margin: 0;
+            font-family: "Segoe UI", sans-serif;
+            background: linear-gradient(135deg, #eef2ff, #f8fafc);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .roadmap {
+            position: relative;
+            width: 95%;
+            max-width: 1300px;
+            height: 360px;
+        }
+
+        /* =========================
+           WAVE LINE (animated draw)
+        ========================= */
+        .wave {
+            position: absolute;
+            width: 100%;
+        }
+
+        .wave path {
+            stroke: #1a2a40;
+            stroke-width: 6;
+            fill: none;
+            stroke-dasharray: 2000;
+            stroke-dashoffset: 2000;
+            animation: draw 3s ease forwards;
+        }
+
+        @keyframes draw {
+            to {
+                stroke-dashoffset: 0;
+            }
+        }
+
+        /* =========================
+           STEP
+        ========================= */
+        .step {
+            position: absolute;
+            text-align: center;
+            width: 120px;
+        }
+
+        /* title under icon */
+        .label {
+            margin-top: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a2a40;
+        }
+
+        /* =========================
+           ICON STYLE
+        ========================= */
+        .icon {
+            width: 75px;
+            height: 75px;
+            border-radius: 50%;
+
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.7);
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+
+            cursor: pointer;
+            transition: 0.4s;
+            position: relative;
+        }
+
+        .icon i {
+            font-size: 26px;
+            color: #1a2a40;
+            transition: 0.4s;
+        }
+
+        /* hover animation */
+        .icon:hover {
+            transform: translateY(-10px) scale(1.15);
+            background: #1a2a40;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+        }
+
+        .icon:hover i {
+            color: white;
+        }
+
+        /* glowing pulse */
+        .icon::after {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: rgba(26, 42, 64, 0.2);
+            animation: pulse 2s infinite;
+            z-index: -1;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: .6 }
+            100% { transform: scale(1.8); opacity: 0 }
+        }
+
+        /* =========================
+           TOOLTIP (2 lines info)
+        ========================= */
+        .tooltip {
+            position: absolute;
+            bottom: 105px;
+            left: 50%;
+            transform: translateX(-50%) translateY(10px);
+
+            width: 200px;
+            padding: 12px;
+
+            background: white;
+            border-radius: 12px;
+
+            box-shadow: 0 10px 25px rgba(0,0,0,.15);
+
+            opacity: 0;
+            transition: 0.35s;
+        }
+
+        .tooltip::after {
+            content: "";
+            position: absolute;
+            bottom: -6px;
+            left: 50%;
+            transform: translateX(-50%) rotate(45deg);
+            width: 12px;
+            height: 12px;
+            background: white;
+        }
+
+        .icon:hover .tooltip {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .tooltip h4 {
+            margin: 0;
+            font-size: 14px;
+            color: #1a2a40;
+        }
+
+        .tooltip p {
+            margin: 4px 0 0;
+            font-size: 12px;
+            color: #666;
+        }
+
+        /* =========================
+           RESPONSIVE
+        ========================= */
+        @media (max-width: 900px) {
+            .roadmap {
+                height: 600px;
+            }
+
+            .step {
+                position: static;
+                margin: 30px auto;
+            }
+
+            .wave {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<section class="roadmap">
+
+    <svg class="wave" viewBox="0 0 1200 250">
+        <path d="M0 150 Q150 20 300 150 T600 150 T900 150 T1200 150"/>
+    </svg>
+
+    <!-- Steps -->
+    <div class="step" style="left:5%; top:140px;">
+        <div class="icon">
+            <i class="fas fa-user-plus"></i>
+            <div class="tooltip">
+                <h4>Register</h4>
+                <p>Create account & start journey</p>
+            </div>
+        </div>
+        <div class="label">Register</div>
+    </div>
+
+    <div class="step" style="left:22%; top:55px;">
+        <div class="icon">
+            <i class="fas fa-graduation-cap"></i>
+            <div class="tooltip">
+                <h4>Training</h4>
+                <p>Expert-led classes & mentorship</p>
+            </div>
+        </div>
+        <div class="label">Training</div>
+    </div>
+
+    <div class="step" style="left:38%; top:175px;">
+        <div class="icon">
+            <i class="fas fa-folder-open"></i>
+            <div class="tooltip">
+                <h4>Projects</h4>
+                <p>Real-world hands-on practice</p>
+            </div>
+        </div>
+        <div class="label">Projects</div>
+    </div>
+
+    <div class="step" style="left:55%; top:55px;">
+        <div class="icon">
+            <i class="fas fa-certificate"></i>
+            <div class="tooltip">
+                <h4>Certification</h4>
+                <p>Industry recognized proof</p>
+            </div>
+        </div>
+        <div class="label">Certification</div>
+    </div>
+
+    <div class="step" style="left:72%; top:175px;">
+        <div class="icon">
+            <i class="fas fa-laptop-code"></i>
+            <div class="tooltip">
+                <h4>Skill Development</h4>
+                <p>Resume & communication boost</p>
+            </div>
+        </div>
+        <div class="label">Skills</div>
+    </div>
+
+    <div class="step" style="left:88%; top:60px;">
+        <div class="icon">
+            <i class="fas fa-briefcase"></i>
+            <div class="tooltip">
+                <h4>Placement</h4>
+                <p>Mock interviews + hiring support</p>
+            </div>
+        </div>
+        <div class="label">Placement</div>
+    </div>
+
+</section>
+
+</body>
+</html>

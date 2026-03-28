@@ -1,0 +1,1892 @@
+{% extends "user/base.html" %}
+{% load static %}
+
+{% block title %}Internship Programs - Smart Equations{% endblock %}
+
+{% block extra_css %}
+<link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap"
+    rel="stylesheet">
+<style>
+    /* =============================== ROOT - MATCHED TO TRAINING PAGE =============================== */
+    :root {
+        --primary: #1a2980;
+        --primary-dark: #0f1a5a;
+        --primary-light: #eef0fa;
+        --secondary: #26d0ce;
+        --secondary-dark: #1ab0ae;
+        --accent: #ff6b6b;
+        --accent-light: #ffe4e4;
+        --dark: #1a1a2e;
+        --text-dark: #1a1a2e;
+        --text-mid: #555;
+        --body: #555;
+        --surface: #f0f1f3;
+        --radius-lg: 20px;
+        --shadow-md: 0 8px 30px rgba(26, 41, 128, .10);
+        --shadow-lg: 0 20px 60px rgba(26, 41, 128, .18);
+        --shadow-card: 0 8px 30px rgba(26, 41, 128, .10), 0 2px 6px rgba(0, 0, 0, .03);
+        --shadow-lift: 0 20px 60px rgba(26, 41, 128, .18), 0 24px 52px rgba(38, 208, 206, .15);
+        --r-xl: 28px;
+        --r-lg: 20px;
+        --r-md: 14px;
+        --r-sm: 10px;
+        --transition: .3s ease;
+        --ease: cubic-bezier(.4, 0, .2, 1);
+        --font-display: 'Outfit', sans-serif;
+        --font-body: 'Plus Jakarta Sans', sans-serif;
+        --font-mono: 'Space Mono', monospace;
+    }
+
+    *,
+    *::before,
+    *::after {
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: var(--font-body);
+    }
+
+    /* ===============================
+   DOODLE BACKGROUND — same as training page
+   =============================== */
+    .doodle-bg {
+        background-color: #f0f1f3;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='520' height='520' viewBox='0 0 520 520'%3E%3Cg fill='none' stroke='%23adb5bd' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'%3E%3C!-- LIGHTBULB col1 row1 --%3E%3Ccircle cx='52' cy='44' r='14'/%3E%3Cpath d='M44 55 Q44 64 52 64 Q60 64 60 55'/%3E%3Cline x1='47' y1='64' x2='57' y2='64'/%3E%3Cline x1='48' y1='67' x2='56' y2='67'/%3E%3Cline x1='52' y1='29' x2='52' y2='25'/%3E%3Cline x1='36' y1='35' x2='32' y2='31'/%3E%3Cline x1='68' y1='35' x2='72' y2='31'/%3E%3Cline x1='30' y1='44' x2='26' y2='44'/%3E%3Cline x1='74' y1='44' x2='78' y2='44'/%3E%3C!-- BAR CHART col2 row1 --%3E%3Crect x='170' y='30' width='10' height='24' rx='2'/%3E%3Crect x='184' y='18' width='10' height='36' rx='2'/%3E%3Crect x='198' y='38' width='10' height='16' rx='2'/%3E%3Crect x='212' y='24' width='10' height='30' rx='2'/%3E%3Cline x1='164' y1='54' x2='228' y2='54'/%3E%3Cpolyline points='175,44 189,28 203,50 217,36' stroke='%2326d0ce' stroke-width='1.8' opacity='0.6'/%3E%3C!-- GLASSES col3 row1 --%3E%3Ccircle cx='330' cy='42' r='14'/%3E%3Ccircle cx='362' cy='42' r='14'/%3E%3Cline x1='344' y1='42' x2='348' y2='42'/%3E%3Cline x1='316' y1='36' x2='308' y2='32'/%3E%3Cline x1='376' y1='36' x2='384' y2='32'/%3E%3C!-- WIFI col4 row1 --%3E%3Cpath d='M440 26 Q465 8 490 26'/%3E%3Cpath d='M447 36 Q465 22 483 36'/%3E%3Cpath d='M455 46 Q465 36 475 46'/%3E%3Ccircle cx='465' cy='54' r='4'/%3E%3C!-- PERSON col1 row2 --%3E%3Ccircle cx='38' cy='140' r='11'/%3E%3Cline x1='38' y1='151' x2='38' y2='180'/%3E%3Cline x1='20' y1='162' x2='56' y2='162'/%3E%3Cline x1='38' y1='180' x2='22' y2='200'/%3E%3Cline x1='38' y1='180' x2='54' y2='200'/%3E%3C!-- LAPTOP col2 row2 --%3E%3Crect x='148' y='130' width='88' height='56' rx='5'/%3E%3Crect x='153' y='135' width='78' height='46' rx='3'/%3E%3Cline x1='130' y1='188' x2='256' y2='188'/%3E%3Crect x='178' y='188' width='28' height='5' rx='2'/%3E%3Cline x1='162' y1='152' x2='222' y2='152'/%3E%3Cline x1='162' y1='160' x2='210' y2='160'/%3E%3Cline x1='162' y1='168' x2='218' y2='168'/%3E%3C!-- GEAR col3 row2 --%3E%3Ccircle cx='346' cy='155' r='18'/%3E%3Ccircle cx='346' cy='155' r='9'/%3E%3Crect x='341' y='132' width='10' height='11' rx='2'/%3E%3Crect x='341' y='166' width='10' height='11' rx='2'/%3E%3Crect x='319' y='150' width='11' height='10' rx='2'/%3E%3Crect x='362' y='150' width='11' height='10' rx='2'/%3E%3C!-- CLOUD + RAIN col4 row2 --%3E%3Cellipse cx='462' cy='135' rx='28' ry='17'/%3E%3Cellipse cx='440' cy='146' rx='17' ry='12'/%3E%3Cellipse cx='484' cy='146' rx='17' ry='12'/%3E%3Cline x1='444' y1='160' x2='441' y2='172'/%3E%3Cline x1='456' y1='160' x2='453' y2='172'/%3E%3Cline x1='468' y1='160' x2='465' y2='172'/%3E%3Cline x1='480' y1='160' x2='477' y2='172'/%3E%3C!-- PIE CHART col1 row3 --%3E%3Ccircle cx='52' cy='286' r='28'/%3E%3Cpath d='M52 286 L52 258 A28 28 0 0 1 76 300 Z' opacity='0.25' stroke='%231a2980' fill='%231a2980'/%3E%3Cpath d='M52 286 L76 300 A28 28 0 0 1 28 308 Z' opacity='0.18' stroke='%2326d0ce' fill='%2326d0ce'/%3E%3Cline x1='52' y1='258' x2='52' y2='286'/%3E%3Cline x1='76' y1='300' x2='52' y2='286'/%3E%3Cline x1='28' y1='308' x2='52' y2='286'/%3E%3C!-- SPEECH BUBBLE col2 row3 --%3E%3Crect x='148' y='252' width='88' height='56' rx='10'/%3E%3Cpath d='M170 308 L162 324 L182 308'/%3E%3Cline x1='164' y1='270' x2='220' y2='270'/%3E%3Cline x1='164' y1='280' x2='220' y2='280'/%3E%3Cline x1='164' y1='290' x2='200' y2='290'/%3E%3C!-- TROPHY col3 row3 --%3E%3Cpath d='M318 248 Q318 284 346 284 Q374 284 374 248 Z'/%3E%3Crect x='334' y='284' width='24' height='10' rx='2'/%3E%3Crect x='326' y='294' width='40' height='8' rx='2'/%3E%3Cpath d='M318 256 Q302 256 302 273 Q302 286 318 284'/%3E%3Cpath d='M374 256 Q390 256 390 273 Q390 286 374 284'/%3E%3C!-- MAGNIFIER col1 row4 --%3E%3Ccircle cx='46' cy='412' r='18'/%3E%3Cline x1='59' y1='425' x2='74' y2='440'/%3E%3Ccircle cx='46' cy='412' r='10' stroke-dasharray='3,3'/%3E%3C!-- PENCIL col3 row4 --%3E%3Crect x='325' y='382' width='14' height='60' rx='3' transform='rotate(-30 332 412)'/%3E%3Cpath d='M312 430 L304 448 L322 442 Z'/%3E%3C!-- CLOCK col4 row4 --%3E%3Ccircle cx='462' cy='410' r='26'/%3E%3Ccircle cx='462' cy='410' r='3'/%3E%3Cline x1='462' y1='410' x2='462' y2='390'/%3E%3Cline x1='462' y1='410' x2='476' y2='418'/%3E%3C!-- ROCKET center --%3E%3Cpath d='M256 84 Q268 58 280 84 L280 110 Q268 120 256 110 Z'/%3E%3Ccircle cx='268' cy='88' r='6'/%3E%3C!-- CODE BRACKETS --%3E%3Cpath d='M96 368 L82 384 L96 400'/%3E%3Cpath d='M122 368 L136 384 L122 400'/%3E%3Cline x1='102' y1='402' x2='116' y2='366'/%3E%3C/g%3E%3C/svg%3E");
+        background-size: 520px 520px;
+        background-repeat: repeat;
+    }
+
+    /* =============================== HERO SLIDER =============================== */
+    .hero-slider-section {
+        position: relative;
+        width: 100%;
+        overflow: hidden;
+        border-radius: 0 0 32px 32px;
+        box-shadow: 0 20px 60px rgba(26, 41, 128, .25);
+        margin-bottom: 0;
+    }
+
+    .slider-track {
+        display: flex;
+        transition: transform 0.75s cubic-bezier(0.77, 0, 0.175, 1);
+        will-change: transform;
+    }
+
+    .slide {
+        min-width: 100%;
+        position: relative;
+        height: 520px;
+        overflow: hidden;
+    }
+
+    .slide img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center top;
+        display: block;
+        transform: scale(1.04);
+        transition: transform 0.75s ease;
+    }
+
+    .slide.active img {
+        transform: scale(1);
+    }
+
+    .slide-overlay {
+        position: absolute;
+        inset: 0;
+        /* Same gradient as training page */
+        background: linear-gradient(105deg,
+                rgba(10, 20, 90, .82) 0%,
+                rgba(26, 41, 128, .60) 40%,
+                rgba(38, 208, 206, .18) 100%);
+        display: flex;
+        align-items: center;
+        padding: 0 80px;
+    }
+
+    .slide-content {
+        max-width: 560px;
+        color: white;
+        opacity: 0;
+        transform: translateX(-30px);
+        transition: opacity 0.5s ease 0.35s, transform 0.5s ease 0.35s;
+    }
+
+    .slide.active .slide-content {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    .slide-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: var(--accent);
+        color: white;
+        font-size: .72rem;
+        font-weight: 700;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        padding: 5px 16px;
+        border-radius: 30px;
+        margin-bottom: 18px;
+        box-shadow: 0 4px 14px rgba(255, 107, 107, .4);
+    }
+
+    .slide-content h1 {
+        font-size: clamp(2rem, 4vw, 3rem);
+        font-weight: 900;
+        line-height: 1.1;
+        margin: 0 0 16px;
+        text-shadow: 0 2px 20px rgba(0, 0, 0, .3);
+        color: white;
+    }
+
+    .slide-content p {
+        font-size: 1rem;
+        line-height: 1.7;
+        opacity: .88;
+        margin: 0 0 28px;
+        max-width: 420px;
+        color: white;
+    }
+
+    .slide-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        background: white;
+        color: var(--primary);
+        padding: 12px 30px;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: .9rem;
+        text-decoration: none;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, .2);
+        transition: transform .2s, box-shadow .2s, background .2s, color .2s;
+    }
+
+    .slide-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, .3);
+        background: var(--secondary);
+        color: white;
+    }
+
+    .slide-duration {
+        position: absolute;
+        top: 28px;
+        right: 32px;
+        background: rgba(255, 255, 255, .15);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, .3);
+        border-radius: 14px;
+        padding: 12px 20px;
+        color: white;
+        text-align: center;
+    }
+
+    .slide-duration .dur-num {
+        display: block;
+        font-size: 2rem;
+        font-weight: 900;
+        line-height: 1;
+        color: var(--secondary);
+    }
+
+    .slide-duration .dur-label {
+        font-size: .72rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        opacity: .8;
+    }
+
+    .slider-nav {
+        position: absolute;
+        bottom: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        z-index: 10;
+    }
+
+    .slider-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, .45);
+        cursor: pointer;
+        transition: all .3s ease;
+        border: none;
+        padding: 0;
+    }
+
+    .slider-dot.active {
+        background: white;
+        width: 30px;
+        border-radius: 5px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, .3);
+    }
+
+    .slider-arrow {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(255, 255, 255, .18);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, .3);
+        color: white;
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 1rem;
+        transition: background .2s;
+        z-index: 10;
+    }
+
+    .slider-arrow:hover {
+        background: rgba(255, 255, 255, .35);
+    }
+
+    .slider-arrow.prev {
+        left: 24px;
+    }
+
+    .slider-arrow.next {
+        right: 24px;
+    }
+
+    .slide-counter {
+        position: absolute;
+        top: 28px;
+        left: 32px;
+        color: rgba(255, 255, 255, .7);
+        font-size: .78rem;
+        font-weight: 700;
+        letter-spacing: 2px;
+        z-index: 5;
+    }
+
+    .slider-progress {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        height: 3px;
+        background: var(--secondary);
+        width: 0%;
+        transition: width 0.05s linear;
+        z-index: 10;
+    }
+
+    /* =============================== INTERNSHIP SECTION — doodle bg like training =============================== */
+    .internship-section {
+        padding: 0 0 100px;
+        position: relative;
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+        position: relative;
+        z-index: 2;
+    }
+
+    /* =============================== SECTION HEADER — matched to training =============================== */
+    .section-header {
+        text-align: center;
+        margin-bottom: 60px;
+        padding-top: 60px;
+    }
+
+    .section-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: .72rem;
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--primary);
+        background: white;
+        border: 1px solid rgba(26, 41, 128, .2);
+        padding: 7px 18px;
+        border-radius: 30px;
+        margin-bottom: 18px;
+        box-shadow: var(--shadow-md);
+    }
+
+    .section-eyebrow i {
+        color: var(--accent);
+    }
+
+    .section-title {
+        font-size: 2.5rem;
+        margin-bottom: 12px;
+        font-weight: 800;
+        display: inline-block;
+        /* Same gradient as training page */
+        background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        position: relative;
+    }
+
+    .section-title::after {
+        content: '';
+        position: absolute;
+        bottom: -8px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 3px;
+        background: linear-gradient(to right, var(--primary), var(--secondary));
+        border-radius: 2px;
+    }
+
+    .section-subtitle {
+        font-size: 1rem;
+        color: var(--text-mid);
+        max-width: 640px;
+        margin: 20px auto 0;
+        line-height: 1.7;
+    }
+
+    /* =============================== INTERNSHIP GRID =============================== */
+    .internships-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+        gap: 28px;
+        margin-top: 48px;
+        position: relative;
+        z-index: 2;
+    }
+
+    /* =============================== INTERNSHIP CARD — white on doodle bg, like training =============================== */
+    .internship-card {
+        background: #ffffff;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300' viewBox='0 0 300 300'%3E%3Cg fill='none' stroke='%231a2980' stroke-width='1.1' stroke-linecap='round' stroke-linejoin='round' opacity='0.030'%3E%3Ccircle cx='30' cy='30' r='12'/%3E%3Ccircle cx='150' cy='30' r='8'/%3E%3Ccircle cx='150' cy='30' r='4'/%3E%3Crect x='60' y='120' width='54' height='34' rx='4'/%3E%3Crect x='220' cy='130' r='14'/%3E%3Ccircle cx='258' cy='230' r='18'/%3E%3Cline x1='258' y1='212' x2='258' y2='248'/%3E%3Cline x1='240' y1='230' x2='276' y2='230'/%3E%3C/g%3E%3C/svg%3E");
+        background-size: 300px 300px;
+        border-radius: var(--radius-lg);
+        box-shadow:
+            0 1px 0 rgba(255, 255, 255, 1),
+            0 4px 6px rgba(26, 41, 128, .05),
+            0 12px 40px rgba(26, 41, 128, .12),
+            0 24px 60px rgba(26, 41, 128, .07);
+        display: flex;
+        flex-direction: column;
+        border: 1px solid rgba(255, 255, 255, .95);
+        overflow: hidden;
+        transition: transform .4s cubic-bezier(.165, .84, .44, 1), box-shadow .4s ease;
+        height: 100%;
+    }
+
+    .internship-card:hover {
+        transform: translateY(-10px) scale(1.01);
+        box-shadow:
+            0 1px 0 rgba(255, 255, 255, 1),
+            var(--shadow-lg);
+        z-index: 10;
+    }
+
+    /* HEADER */
+    .internship-header {
+        height: 220px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .internship-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform .6s cubic-bezier(.165, .84, .44, 1);
+    }
+
+    .internship-card:hover .internship-image {
+        transform: scale(1.06);
+    }
+
+    .image-overlay {
+        position: absolute;
+        inset: 0;
+        /* Same gradient palette as training */
+        background: linear-gradient(135deg, rgba(26, 41, 128, .88) 0%, rgba(38, 208, 206, .75) 100%);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 30px;
+        text-align: center;
+        color: #fff;
+        transition: background .4s var(--ease);
+    }
+
+    .internship-card:hover .image-overlay {
+        background: linear-gradient(135deg, rgba(26, 41, 128, .92) 0%, rgba(255, 107, 107, .82) 100%);
+    }
+
+    .internship-icon {
+        font-size: 1.6rem;
+        margin-bottom: 14px;
+        background: rgba(255, 255, 255, .2);
+        width: 68px;
+        height: 68px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(10px);
+        border: 2px solid rgba(255, 255, 255, .4);
+        animation: float 3.5s ease-in-out infinite;
+        transition: all .4s var(--ease);
+    }
+
+    .internship-card:hover .internship-icon {
+        transform: scale(1.1) rotate(8deg);
+        background: rgba(255, 255, 255, .3);
+    }
+
+    @keyframes float {
+
+        0%,
+        100% {
+            transform: translateY(0);
+        }
+
+        50% {
+            transform: translateY(-8px);
+        }
+    }
+
+    .internship-header h3 {
+        font-size: 1.65rem;
+        font-weight: 800;
+        margin: 0;
+        line-height: 1.2;
+        text-shadow: 0 2px 14px rgba(0, 0, 0, .3);
+    }
+
+    .internship-badge {
+        display: inline-block;
+        background: var(--accent);
+        padding: 5px 14px;
+        border-radius: 30px;
+        font-size: .72rem;
+        margin-top: 10px;
+        font-weight: 700;
+        letter-spacing: .5px;
+        box-shadow: 0 4px 12px rgba(255, 107, 107, .35);
+    }
+
+    /* BODY */
+    .internship-body {
+        padding: 28px 26px 20px;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        background: rgba(255, 255, 255, .96);
+    }
+
+    .internship-description {
+        color: var(--text-mid);
+        line-height: 1.7;
+        font-size: .95rem;
+        margin-bottom: 20px;
+    }
+
+    /* Details row — same look as training's duration row */
+    .internship-details {
+        display: flex;
+        justify-content: space-around;
+        padding: 14px 8px;
+        margin: 0 0 20px;
+        background: #f8faff;
+        border-radius: 12px;
+        border: 1.5px solid rgba(26, 41, 128, .10);
+    }
+
+    .detail-item {
+        text-align: center;
+        padding: 6px 10px;
+        position: relative;
+    }
+
+    .detail-item:not(:last-child)::after {
+        content: '';
+        position: absolute;
+        right: 0;
+        top: 15%;
+        bottom: 15%;
+        width: 1.5px;
+        background: linear-gradient(to bottom, transparent, rgba(26, 41, 128, .15), transparent);
+    }
+
+    .detail-number {
+        display: block;
+        font-size: 1.45rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 2px;
+        line-height: 1;
+    }
+
+    .detail-label {
+        font-size: .68rem;
+        color: var(--text-mid);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-weight: 700;
+    }
+
+    /* Feature list — same style as training check-list */
+    .internship-features {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 9px;
+    }
+
+    .internship-features li {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        font-size: .92rem;
+        color: var(--text-mid);
+        line-height: 1.4;
+        padding: 0;
+        border-bottom: none;
+    }
+
+    .internship-features i {
+        color: var(--secondary);
+        font-size: .95rem;
+        margin-top: 2px;
+        flex-shrink: 0;
+        min-width: unset;
+        height: unset;
+        background: none;
+        border-radius: 0;
+    }
+
+    /* FOOTER — same accent style as training course-link */
+    .internship-footer {
+        background: #f8faff;
+        padding: 20px 26px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-top: 1px solid rgba(26, 41, 128, .07);
+        gap: 12px;
+    }
+
+    .apply-link {
+        color: var(--primary);
+        text-decoration: none;
+        font-weight: 600;
+        font-size: .88rem;
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        transition: all .3s var(--ease);
+        padding: 9px 16px;
+        border-radius: 30px;
+        background: white;
+        border: 1.5px solid rgba(26, 41, 128, .15);
+    }
+
+    .apply-link:hover {
+        background: var(--primary-light);
+        border-color: var(--primary);
+        transform: translateY(-2px);
+        color: var(--primary);
+    }
+
+    /* Enroll button — same as training's course-link */
+    .enroll-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 9px 18px;
+        background: linear-gradient(135deg, var(--accent), #ff5252);
+        color: white;
+        border: none;
+        border-radius: 30px;
+        font-weight: 600;
+        font-size: .88rem;
+        width: fit-content;
+        cursor: pointer;
+        font-family: var(--font-body);
+        transition: transform .3s, box-shadow .3s;
+        box-shadow: 0 4px 14px rgba(255, 107, 107, .3);
+    }
+
+    .enroll-btn:hover {
+        transform: translateX(4px);
+        box-shadow: 0 8px 20px rgba(255, 107, 107, .45);
+    }
+
+    /* ===============================
+   ENROLL MODAL - UPDATED
+   =============================== */
+    .enroll-modal {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(26, 41, 128, .72);
+        backdrop-filter: blur(8px);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+        padding: 16px;
+        overflow-y: auto;
+    }
+
+    .enroll-modal.active {
+        display: flex;
+    }
+
+    .modal-content {
+        background: #ffffff;
+        border-radius: var(--radius-lg);
+        padding: 28px 32px 30px;
+        max-width: 760px;
+        width: 100%;
+        position: relative;
+        box-shadow: var(--shadow-lg), 0 0 0 1px rgba(38, 208, 206, .15);
+        animation: modalIn .32s cubic-bezier(.165, .84, .44, 1);
+        margin: auto;
+    }
+
+    @keyframes modalIn {
+        from {
+            transform: translateY(24px) scale(.96);
+            opacity: 0;
+        }
+
+        to {
+            transform: translateY(0) scale(1);
+            opacity: 1;
+        }
+    }
+
+    .modal-topbar {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 5px;
+        background: linear-gradient(to right, var(--primary), var(--secondary));
+        border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    }
+
+    .close-modal {
+        position: absolute;
+        top: 14px;
+        right: 18px;
+        font-size: 26px;
+        line-height: 1;
+        cursor: pointer;
+        color: #bbb;
+        transition: color .25s;
+        background: none;
+        border: none;
+        padding: 0;
+    }
+
+    .close-modal:hover {
+        color: var(--secondary);
+    }
+
+    .modal-header {
+        margin-bottom: 22px;
+        padding-top: 6px;
+    }
+
+    .modal-course-tag {
+        display: inline-block;
+        background: linear-gradient(135deg, var(--accent), #ff5252);
+        color: white;
+        font-size: .68rem;
+        font-weight: 700;
+        letter-spacing: 1.2px;
+        text-transform: uppercase;
+        padding: 4px 12px;
+        border-radius: 20px;
+        margin-bottom: 10px;
+        box-shadow: 0 3px 10px rgba(255, 107, 107, .3);
+    }
+
+    .modal-content h3 {
+        font-size: 1.55rem;
+        font-weight: 800;
+        color: var(--text-dark);
+        margin: 0;
+        line-height: 1.2;
+    }
+
+    .modal-content h3 span {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    /* ── Single-row fields ── */
+    .modal-form .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 14px;
+        margin-bottom: 14px;
+    }
+
+    .modal-form .form-group {
+        margin-bottom: 14px;
+    }
+
+    .modal-form label {
+        display: block;
+        color: var(--text-mid);
+        margin-bottom: 6px;
+        font-weight: 600;
+        font-size: .82rem;
+    }
+
+    .modal-form input,
+    .modal-form textarea {
+        width: 100%;
+        padding: 10px 14px;
+        border: 1.5px solid rgba(26, 41, 128, .14);
+        border-radius: 10px;
+        font-size: .92rem;
+        font-family: inherit;
+        transition: border-color .25s, box-shadow .25s;
+        background: #fafbff;
+        color: var(--text-dark);
+        box-sizing: border-box;
+    }
+
+    .modal-form input:focus,
+    .modal-form textarea:focus {
+        outline: none;
+        border-color: var(--secondary);
+        box-shadow: 0 0 0 3px rgba(38, 208, 206, .15);
+    }
+
+    .modal-form textarea {
+        resize: vertical;
+        min-height: 90px;
+    }
+
+    .modal-submit-btn {
+        width: 100%;
+        background: linear-gradient(135deg, var(--accent), #ff5252);
+        color: white;
+        border: none;
+        padding: 13px;
+        border-radius: 10px;
+        font-size: 1rem;
+        font-weight: 700;
+        font-family: inherit;
+        cursor: pointer;
+        transition: var(--transition);
+        margin-top: 4px;
+        box-shadow: 0 4px 14px rgba(255, 107, 107, .3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .modal-submit-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 24px rgba(255, 107, 107, .4);
+    }
+
+    @media (max-width: 600px) {
+        .modal-form .form-row {
+            grid-template-columns: 1fr;
+        }
+
+        .modal-content {
+            padding: 28px 18px 24px;
+        }
+    }
+
+    /* =============================== SUCCESS POPUP =============================== */
+    .success-popup {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(26, 41, 128, .72);
+        backdrop-filter: blur(8px);
+        z-index: 1100;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .success-popup.active {
+        display: flex;
+    }
+
+    .success-content {
+        background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        border-radius: var(--radius-lg);
+        padding: 48px 40px;
+        max-width: 400px;
+        width: 90%;
+        text-align: center;
+        color: white;
+        box-shadow: var(--shadow-lg);
+        animation: popupScale .35s var(--ease);
+    }
+
+    .success-content i {
+        font-size: 4rem;
+        margin-bottom: 20px;
+    }
+
+    .success-content h3 {
+        font-size: 2rem;
+        font-weight: 900;
+        margin-bottom: 14px;
+    }
+
+    .success-content p {
+        font-size: 1rem;
+        margin-bottom: 26px;
+        line-height: 1.65;
+        opacity: .92;
+    }
+
+    .success-close-btn {
+        background: rgba(255, 255, 255, .2);
+        color: white;
+        border: 2px solid rgba(255, 255, 255, .7);
+        padding: 11px 30px;
+        border-radius: 30px;
+        font-size: .95rem;
+        font-weight: 700;
+        font-family: var(--font-body);
+        cursor: pointer;
+        transition: all .3s ease;
+    }
+
+    .success-close-btn:hover {
+        background: white;
+        color: var(--primary);
+        transform: translateY(-2px);
+    }
+
+    @keyframes popupScale {
+        from {
+            transform: scale(.85);
+            opacity: 0;
+        }
+
+        to {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+
+    /* =============================== BENEFITS SECTION — white bg like training containers =============================== */
+    .benefits-section {
+        padding: 80px 0 100px;
+        background: #ffffff;
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* Subtle stripe texture */
+    .benefits-section::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: repeating-linear-gradient(48deg,
+                rgba(26, 41, 128, .02) 0px,
+                rgba(26, 41, 128, .02) 2px,
+                transparent 2px,
+                transparent 24px);
+        pointer-events: none;
+    }
+
+    .benefits-section .container {
+        position: relative;
+        z-index: 2;
+    }
+
+    .benefits-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 24px;
+        margin-top: 48px;
+    }
+
+    .benefit-card {
+        background: white;
+        padding: 36px 24px;
+        border-radius: var(--radius-lg);
+        text-align: center;
+        transition: transform .4s var(--ease), box-shadow .4s var(--ease);
+        border: 1.5px solid rgba(26, 41, 128, .08);
+        box-shadow: var(--shadow-md);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .benefit-card::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        opacity: 0;
+        transition: opacity .4s var(--ease);
+        z-index: 0;
+        border-radius: inherit;
+    }
+
+    .benefit-card:hover {
+        transform: translateY(-10px) scale(1.02);
+        border-color: transparent;
+        box-shadow: var(--shadow-lg);
+    }
+
+    .benefit-card:hover::after {
+        opacity: 1;
+    }
+
+    .benefit-card>* {
+        position: relative;
+        z-index: 1;
+    }
+
+    .benefit-card:hover .benefit-icon,
+    .benefit-card:hover h4,
+    .benefit-card:hover p {
+        color: #fff;
+    }
+
+    .benefit-icon-wrap {
+        width: 72px;
+        height: 72px;
+        border-radius: 50%;
+        background: var(--primary-light);
+        border: 2px solid rgba(26, 41, 128, .12);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        transition: background .4s, border-color .4s, transform .4s;
+    }
+
+    .benefit-card:hover .benefit-icon-wrap {
+        background: rgba(255, 255, 255, .22);
+        border-color: rgba(255, 255, 255, .5);
+        transform: scale(1.1) rotate(6deg);
+    }
+
+    .benefit-icon {
+        font-size: 1.8rem;
+        color: var(--primary);
+        transition: color .4s;
+    }
+
+    .benefit-card h4 {
+        font-size: 1.1rem;
+        color: var(--text-dark);
+        margin-bottom: 10px;
+        font-weight: 700;
+        transition: color .4s;
+    }
+
+    .benefit-card p {
+        color: var(--text-mid);
+        line-height: 1.65;
+        font-size: .88rem;
+        transition: color .4s;
+    }
+
+    /* =============================== STATS SECTION — dark primary bg like training hero =============================== */
+    .stats-section {
+        padding: 80px 0;
+        /* Dark navy gradient to match training page's color family */
+        background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 50%, rgba(38, 208, 206, .85) 100%);
+        position: relative;
+        overflow: hidden;
+        margin: 0;
+    }
+
+    /* Dot grid texture over dark bg */
+    .stats-section::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background-image: radial-gradient(circle, rgba(255, 255, 255, .07) 1.5px, transparent 1.5px);
+        background-size: 32px 32px;
+        z-index: 0;
+        pointer-events: none;
+    }
+
+    .stats-section .container {
+        position: relative;
+        z-index: 2;
+    }
+
+    /* White text section title on dark bg */
+    .stats-section .section-title {
+        background: linear-gradient(135deg, #ffffff 20%, #26d0ce 60%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .stats-section .section-title::after {
+        background: linear-gradient(to right, rgba(255, 255, 255, .6), var(--secondary));
+    }
+
+    .stats-section .section-subtitle {
+        color: rgba(255, 255, 255, .82);
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 24px;
+        text-align: center;
+        position: relative;
+        z-index: 1;
+        margin-top: 48px;
+    }
+
+    .stat-item-large {
+        padding: 36px 24px;
+        background: rgba(255, 255, 255, .10);
+        backdrop-filter: blur(14px);
+        border-radius: var(--radius-lg);
+        border: 1px solid rgba(255, 255, 255, .18);
+        transition: transform .38s var(--ease), background .38s, box-shadow .38s;
+    }
+
+    .stat-item-large:hover {
+        transform: translateY(-8px) scale(1.03);
+        background: rgba(255, 255, 255, .18);
+        border-color: rgba(255, 255, 255, .35);
+        box-shadow: 0 16px 40px rgba(0, 0, 0, .25);
+    }
+
+    .stat-number-large {
+        font-size: 3rem;
+        font-weight: 900;
+        color: var(--secondary);
+        display: block;
+        margin-bottom: 8px;
+        text-shadow: 0 2px 18px rgba(38, 208, 206, .5);
+        transition: all .38s var(--ease);
+        line-height: 1;
+    }
+
+    .stat-item-large:hover .stat-number-large {
+        transform: scale(1.1);
+        color: #fff;
+        text-shadow: 0 2px 24px rgba(255, 255, 255, .5);
+    }
+
+    .stat-label-large {
+        font-size: .72rem;
+        opacity: .8;
+        font-weight: 700;
+        color: rgba(255, 255, 255, .85);
+        text-transform: uppercase;
+        letter-spacing: 1.8px;
+        transition: all .3s;
+    }
+
+    .stat-item-large:hover .stat-label-large {
+        color: #fff;
+        opacity: 1;
+    }
+
+    /* =============================== SCROLL ANIMATIONS — same as training =============================== */
+    .animate-on-scroll {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .animate-on-scroll.animated {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    /* =============================== EXPLORE BUTTON — same as training =============================== */
+    .explore-section {
+        text-align: center;
+        padding: 40px 0 20px;
+    }
+
+    .explore-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 13px 38px;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 1.05rem;
+        text-decoration: none;
+        transition: var(--transition);
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        box-shadow: 0 8px 25px rgba(26, 41, 128, .2);
+    }
+
+    .explore-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 14px 35px rgba(26, 41, 128, .3);
+        color: white;
+    }
+
+    /* =============================== RESPONSIVE =============================== */
+    @media (max-width: 900px) {
+        .slide-overlay {
+            padding: 0 40px;
+        }
+    }
+
+    @media (max-width: 768px) {
+
+        .internships-grid,
+        .benefits-grid,
+        .stats-grid {
+            grid-template-columns: 1fr;
+            gap: 22px;
+        }
+
+        .internship-header {
+            height: 180px;
+        }
+
+        .internship-footer {
+            flex-direction: column;
+            gap: 12px;
+            align-items: stretch;
+        }
+
+        .apply-link,
+        .enroll-btn {
+            justify-content: center;
+        }
+    }
+
+    @media (max-width: 700px) {
+        .slide {
+            height: 420px;
+        }
+
+        .slide-overlay {
+            padding: 0 24px;
+        }
+
+        .slide-content h1 {
+            font-size: 1.6rem;
+        }
+
+        .slide-duration {
+            display: none;
+        }
+
+        .slider-arrow {
+            display: none;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .slide {
+            height: 360px;
+        }
+
+        .internship-section,
+        .benefits-section {
+            padding-bottom: 64px;
+        }
+
+        .section-title {
+            font-size: 2rem;
+        }
+
+        .internship-body {
+            padding: 22px 18px 16px;
+        }
+
+        .internship-footer {
+            padding: 18px;
+        }
+
+        .stat-number-large {
+            font-size: 2.2rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- Enroll Modal -->
+<div class="enroll-modal" id="enrollModal">
+    <div class="modal-content">
+        <span class="close-modal" id="closeModal">&times;</span>
+        <h3 id="modalProgramTitle">Enroll in Web Development</h3>
+        <form class="modal-form" id="enrollForm" method="POST" action="{% url 'enroll_internship' %}">
+    {% csrf_token %}
+    <input type="hidden" name="program_name" id="programNameInput">
+
+    <!-- Single row: Name | Email | Mobile -->
+    <div class="form-row">
+        <div class="form-group">
+            <label for="fullName">Full Name *</label>
+            <input type="text" id="fullName" name="full_name" placeholder="Your full name" required>
+        </div>
+        <div class="form-group">
+            <label for="email">Email Address *</label>
+            <input type="email" id="email" name="email" placeholder="Your email" required>
+        </div>
+        <div class="form-group">
+            <label for="mobile">Mobile Number *</label>
+            <input type="tel" id="mobile" name="mobile" placeholder="Your mobile" required>
+        </div>
+    </div>
+
+    <!-- Message below -->
+    <div class="form-group">
+        <label for="message">Message (Optional)</label>
+        <textarea id="message" name="message" placeholder="Any questions or requirements?"></textarea>
+    </div>
+
+    <button type="submit" class="modal-submit-btn">
+        <i class="fas fa-graduation-cap"></i> Submit Enrollment
+    </button>
+</form>
+    </div>
+</div>
+
+<!-- Success Popup -->
+<div class="success-popup" id="successPopup">
+    <div class="success-content">
+        <i class="fas fa-check-circle"></i>
+        <h3>Thank You!</h3>
+        <p>Your enrollment request has been received. Our team will contact you within 24 hours.</p>
+        <button class="success-close-btn" id="closeSuccessPopup">Close</button>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     HERO SLIDER — same structure & style as training
+════════════════════════════════════════ -->
+<div class="hero-slider-section">
+
+    <div class="slide-counter" id="slideCounter">01 / 05</div>
+
+    <button class="slider-arrow prev" id="sliderPrev" aria-label="Previous">
+        <i class="fas fa-chevron-left"></i>
+    </button>
+    <button class="slider-arrow next" id="sliderNext" aria-label="Next">
+        <i class="fas fa-chevron-right"></i>
+    </button>
+
+    <div class="slider-track" id="sliderTrack">
+
+        <div class="slide active">
+            <img src="https://images.unsplash.com/photo-1547658719-da2b51169166?auto=format&fit=crop&w=1400&q=80"
+                alt="Web Development Internship">
+            <div class="slide-overlay">
+                <div class="slide-content">
+                    <span class="slide-tag"><i class="fas fa-rocket"></i> Live Projects</span>
+                    <h1>Web<br>Development</h1>
+                    <p>Build responsive websites and web applications for real clients. Experience the full development
+                        lifecycle from requirements to launch.</p>
+                    <a href="{% url 'internship_details' %}?type=web" class="slide-btn">
+                        <i class="fas fa-arrow-right"></i> View Details
+                    </a>
+                </div>
+            </div>
+            <div class="slide-duration"><span class="dur-num">3–6</span><span class="dur-label">Months</span></div>
+        </div>
+
+        <div class="slide">
+            <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1400&q=80"
+                alt="Data Science Internship">
+            <div class="slide-overlay">
+                <div class="slide-content">
+                    <span class="slide-tag"><i class="fas fa-database"></i> Real Data</span>
+                    <h1>Data<br>Science</h1>
+                    <p>Work on real data analysis and machine learning projects sourced from industry partners. Develop
+                        models and communicate findings through compelling data stories.</p>
+                    <a href="{% url 'internship_details' %}?type=data" class="slide-btn">
+                        <i class="fas fa-arrow-right"></i> View Details
+                    </a>
+                </div>
+            </div>
+            <div class="slide-duration"><span class="dur-num">4–6</span><span class="dur-label">Months</span></div>
+        </div>
+
+        <div class="slide">
+            <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1400&q=80"
+                alt="Cloud & DevOps Internship">
+            <div class="slide-overlay">
+                <div class="slide-content">
+                    <span class="slide-tag"><i class="fas fa-cloud"></i> Cloud Native</span>
+                    <h1>Cloud &amp;<br>DevOps</h1>
+                    <p>Learn cloud infrastructure and DevOps practices through hands-on projects on AWS. Build and
+                        maintain CI/CD pipelines used by real teams.</p>
+                    <a href="{% url 'internship_details' %}?type=cloud" class="slide-btn">
+                        <i class="fas fa-arrow-right"></i> View Details
+                    </a>
+                </div>
+            </div>
+            <div class="slide-duration"><span class="dur-num">3–5</span><span class="dur-label">Months</span></div>
+        </div>
+
+        <div class="slide">
+            <img src="https://images.unsplash.com/photo-1526379095098-d400fd0bf935?auto=format&fit=crop&w=1400&q=80"
+                alt="Python Programming Internship">
+            <div class="slide-overlay">
+                <div class="slide-content">
+                    <span class="slide-tag"><i class="fab fa-python"></i> Scripting &amp; Automation</span>
+                    <h1>Python<br>Programming</h1>
+                    <p>Master Python through real automation scripts, backend services, and data-driven applications.
+                        Build production-grade tools used by actual businesses.</p>
+                    <a href="{% url 'internship_details' %}?type=python" class="slide-btn">
+                        <i class="fas fa-arrow-right"></i> View Details
+                    </a>
+                </div>
+            </div>
+            <div class="slide-duration"><span class="dur-num">3–5</span><span class="dur-label">Months</span></div>
+        </div>
+
+        <div class="slide">
+            <img src="https://images.unsplash.com/photo-1555099962-4199c345e5dd?auto=format&fit=crop&w=1400&q=80"
+                alt="Java Development Internship">
+            <div class="slide-overlay">
+                <div class="slide-content">
+                    <span class="slide-tag"><i class="fab fa-java"></i> Enterprise Ready</span>
+                    <h1>Java<br>Development</h1>
+                    <p>Develop robust enterprise applications using Java and Spring Boot. Work on scalable backends
+                        powering real-world systems and APIs.</p>
+                    <a href="{% url 'internship_details' %}?type=java" class="slide-btn">
+                        <i class="fas fa-arrow-right"></i> View Details
+                    </a>
+                </div>
+            </div>
+            <div class="slide-duration"><span class="dur-num">4–6</span><span class="dur-label">Months</span></div>
+        </div>
+
+    </div>
+
+    <div class="slider-nav" id="sliderNav">
+        <button class="slider-dot active" data-index="0"></button>
+        <button class="slider-dot" data-index="1"></button>
+        <button class="slider-dot" data-index="2"></button>
+        <button class="slider-dot" data-index="3"></button>
+        <button class="slider-dot" data-index="4"></button>
+    </div>
+
+    <div class="slider-progress" id="sliderProgress"></div>
+
+</div>
+
+
+<!-- ═══════════════════════════════════════
+     INTERNSHIP CARDS — doodle bg same as training
+════════════════════════════════════════ -->
+<section class="internship-section doodle-bg">
+    <div class="container">
+        <div class="section-header animate-on-scroll">
+            <h2 class="section-title">Internship Programs</h2>
+            <p class="section-subtitle">
+                Kickstart your career with our industry-focused internship programs.
+                Gain real-world experience, work on live projects, and build your professional portfolio.
+            </p>
+        </div>
+
+        <div class="internships-grid">
+
+            <!-- Web Development -->
+            <div class="internship-card animate-on-scroll">
+                <div class="internship-header">
+                    <img src="https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=1000&q=80"
+                        alt="Web Development" class="internship-image">
+                    <div class="image-overlay">
+                        <div class="internship-icon"><i class="fas fa-code"></i></div>
+                        <h3>Web Development</h3>
+                        <span class="internship-badge">Full Stack</span>
+                    </div>
+                </div>
+                <div class="internship-body">
+                    <p class="internship-description">
+                        Build responsive websites and web applications. Work with modern frameworks
+                        and learn end-to-end development process with real projects.
+                    </p>
+                    <div class="internship-details">
+                        <div class="detail-item">
+                            <span class="detail-number">3-6</span>
+                            <span class="detail-label">Months</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-number">2</span>
+                            <span class="detail-label">Projects</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-number">Hybrid</span>
+                            <span class="detail-label">Mode</span>
+                        </div>
+                    </div>
+                    <ul class="internship-features">
+                        <li><i class="fas fa-check"></i> Frontend &amp; Backend Development</li>
+                        <li><i class="fas fa-check"></i> React.js / Angular Framework</li>
+                        <li><i class="fas fa-check"></i> Node.js / Django Development</li>
+                        <li><i class="fas fa-check"></i> Database Integration</li>
+                    </ul>
+                </div>
+                <div class="internship-footer">
+                    <a href="{% url 'internship_details' %}?type=web" class="apply-link">
+                        <i class="fas fa-info-circle"></i> View Details
+                    </a>
+                    <button class="enroll-btn" onclick="openEnrollModal('Web Development')">
+                        <i class="fas fa-graduation-cap"></i> Enroll Now
+                    </button>
+                </div>
+            </div>
+
+            <!-- Data Science -->
+            <div class="internship-card animate-on-scroll">
+                <div class="internship-header">
+                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1000&q=80"
+                        alt="Data Science" class="internship-image">
+                    <div class="image-overlay">
+                        <div class="internship-icon"><i class="fas fa-chart-line"></i></div>
+                        <h3>Data Science</h3>
+                        <span class="internship-badge">AI/ML Focus</span>
+                    </div>
+                </div>
+                <div class="internship-body">
+                    <p class="internship-description">
+                        Work on real data analysis projects. Learn machine learning algorithms
+                        and build predictive models with industry datasets and AI tools.
+                    </p>
+                    <div class="internship-details">
+                        <div class="detail-item">
+                            <span class="detail-number">4-6</span>
+                            <span class="detail-label">Months</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-number">3</span>
+                            <span class="detail-label">Projects</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-number">Remote</span>
+                            <span class="detail-label">Mode</span>
+                        </div>
+                    </div>
+                    <ul class="internship-features">
+                        <li><i class="fas fa-check"></i> Data Analysis &amp; Visualization</li>
+                        <li><i class="fas fa-check"></i> Machine Learning Models</li>
+                        <li><i class="fas fa-check"></i> Statistical Analysis</li>
+                        <li><i class="fas fa-check"></i> Python &amp; R Programming</li>
+                    </ul>
+                </div>
+                <div class="internship-footer">
+                    <a href="{% url 'internship_details' %}?type=data" class="apply-link">
+                        <i class="fas fa-info-circle"></i> View Details
+                    </a>
+                    <button class="enroll-btn" onclick="openEnrollModal('Data Science')">
+                        <i class="fas fa-graduation-cap"></i> Enroll Now
+                    </button>
+                </div>
+            </div>
+
+            <!-- Cloud & DevOps -->
+            <div class="internship-card animate-on-scroll">
+                <div class="internship-header">
+                    <img src="https://images.unsplash.com/photo-1633356122544-f134324a6cee?auto=format&fit=crop&w=1000&q=80"
+                        alt="Cloud & DevOps" class="internship-image">
+                    <div class="image-overlay">
+                        <div class="internship-icon"><i class="fas fa-server"></i></div>
+                        <h3>Cloud &amp; DevOps</h3>
+                        <span class="internship-badge">AWS/Azure</span>
+                    </div>
+                </div>
+                <div class="internship-body">
+                    <p class="internship-description">
+                        Learn cloud infrastructure and DevOps practices. Work with AWS,
+                        Docker, Kubernetes, and implement CI/CD pipelines on real projects.
+                    </p>
+                    <div class="internship-details">
+                        <div class="detail-item">
+                            <span class="detail-number">4-6</span>
+                            <span class="detail-label">Months</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-number">3</span>
+                            <span class="detail-label">Projects</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-number">Remote</span>
+                            <span class="detail-label">Mode</span>
+                        </div>
+                    </div>
+                    <ul class="internship-features">
+                        <li><i class="fas fa-check"></i> AWS / Azure Services</li>
+                        <li><i class="fas fa-check"></i> Docker &amp; Containerization</li>
+                        <li><i class="fas fa-check"></i> CI/CD Pipeline Setup</li>
+                        <li><i class="fas fa-check"></i> Infrastructure as Code</li>
+                    </ul>
+                </div>
+                <div class="internship-footer">
+                    <a href="{% url 'internship_details' %}?type=cloud" class="apply-link">
+                        <i class="fas fa-info-circle"></i> View Details
+                    </a>
+                    <button class="enroll-btn" onclick="openEnrollModal('Cloud &amp; DevOps')">
+                        <i class="fas fa-graduation-cap"></i> Enroll Now
+                    </button>
+                </div>
+            </div>
+
+            <!-- Python Programming -->
+            <div class="internship-card animate-on-scroll">
+                <div class="internship-header">
+                    <img src="https://images.unsplash.com/photo-1526379095098-d400fd0bf935?auto=format&fit=crop&w=1000&q=80"
+                        alt="Python Programming" class="internship-image">
+                    <div class="image-overlay">
+                        <div class="internship-icon"><i class="fab fa-python"></i></div>
+                        <h3>Python Programming</h3>
+                        <span class="internship-badge">Automation &amp; Backend</span>
+                    </div>
+                </div>
+                <div class="internship-body">
+                    <p class="internship-description">
+                        Master Python by building automation scripts, REST APIs, and backend services.
+                        Work on real-world projects covering scripting, web frameworks, and data pipelines.
+                    </p>
+                    <div class="internship-details">
+                        <div class="detail-item">
+                            <span class="detail-number">3-5</span>
+                            <span class="detail-label">Months</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-number">3</span>
+                            <span class="detail-label">Projects</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-number">Remote</span>
+                            <span class="detail-label">Mode</span>
+                        </div>
+                    </div>
+                    <ul class="internship-features">
+                        <li><i class="fas fa-check"></i> Python Core &amp; OOP Concepts</li>
+                        <li><i class="fas fa-check"></i> Django / Flask Web Framework</li>
+                        <li><i class="fas fa-check"></i> Automation &amp; Scripting</li>
+                        <li><i class="fas fa-check"></i> REST API Development</li>
+                    </ul>
+                </div>
+                <div class="internship-footer">
+                    <a href="{% url 'internship_details' %}?type=python" class="apply-link">
+                        <i class="fas fa-info-circle"></i> View Details
+                    </a>
+                    <button class="enroll-btn" onclick="openEnrollModal('Python Programming')">
+                        <i class="fas fa-graduation-cap"></i> Enroll Now
+                    </button>
+                </div>
+            </div>
+
+            <!-- Java Development -->
+            <div class="internship-card animate-on-scroll">
+                <div class="internship-header">
+                    <img src="https://images.unsplash.com/photo-1555099962-4199c345e5dd?auto=format&fit=crop&w=1000&q=80"
+                        alt="Java Development" class="internship-image">
+                    <div class="image-overlay">
+                        <div class="internship-icon"><i class="fab fa-java"></i></div>
+                        <h3>Java Development</h3>
+                        <span class="internship-badge">Enterprise / Spring</span>
+                    </div>
+                </div>
+                <div class="internship-body">
+                    <p class="internship-description">
+                        Build scalable enterprise applications with Java and Spring Boot.
+                        Learn industry-standard design patterns, microservices, and robust backend architectures.
+                    </p>
+                    <div class="internship-details">
+                        <div class="detail-item">
+                            <span class="detail-number">4-6</span>
+                            <span class="detail-label">Months</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-number">3</span>
+                            <span class="detail-label">Projects</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-number">Hybrid</span>
+                            <span class="detail-label">Mode</span>
+                        </div>
+                    </div>
+                    <ul class="internship-features">
+                        <li><i class="fas fa-check"></i> Core Java &amp; OOP Principles</li>
+                        <li><i class="fas fa-check"></i> Spring Boot &amp; Spring MVC</li>
+                        <li><i class="fas fa-check"></i> Microservices Architecture</li>
+                        <li><i class="fas fa-check"></i> JPA / Hibernate &amp; Databases</li>
+                    </ul>
+                </div>
+                <div class="internship-footer">
+                    <a href="{% url 'internship_details' %}?type=java" class="apply-link">
+                        <i class="fas fa-info-circle"></i> View Details
+                    </a>
+                    <button class="enroll-btn" onclick="openEnrollModal('Java Development')">
+                        <i class="fas fa-graduation-cap"></i> Enroll Now
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="explore-section">
+            <a href="{% url 'training' %}" class="explore-btn">
+                <i class="fas fa-graduation-cap"></i> View Training Programs
+            </a>
+        </div>
+
+    </div>
+</section>
+
+
+<!-- =============================== BENEFITS SECTION =============================== -->
+<section class="benefits-section">
+    <div class="container">
+        <div class="section-header animate-on-scroll">
+            <h2 class="section-title">Internship Benefits</h2>
+            <p class="section-subtitle">
+                Our internship programs are designed to provide maximum learning and career growth opportunities
+            </p>
+        </div>
+        <div class="benefits-grid">
+            <div class="benefit-card animate-on-scroll">
+                <div class="benefit-icon-wrap">
+                    <div class="benefit-icon"><i class="fas fa-briefcase"></i></div>
+                </div>
+                <h4>Industry Experience</h4>
+                <p>Work on real projects that solve actual business problems and add value to your resume</p>
+            </div>
+            <div class="benefit-card animate-on-scroll">
+                <div class="benefit-icon-wrap">
+                    <div class="benefit-icon"><i class="fas fa-user-tie"></i></div>
+                </div>
+                <h4>Mentorship</h4>
+                <p>Get guidance from industry experts with years of experience in their respective fields</p>
+            </div>
+            <div class="benefit-card animate-on-scroll">
+                <div class="benefit-icon-wrap">
+                    <div class="benefit-icon"><i class="fas fa-certificate"></i></div>
+                </div>
+                <h4>Certification</h4>
+                <p>Receive industry-recognized certificates upon successful completion of internship</p>
+            </div>
+            <div class="benefit-card animate-on-scroll">
+                <div class="benefit-icon-wrap">
+                    <div class="benefit-icon"><i class="fas fa-handshake"></i></div>
+                </div>
+                <h4>Job Opportunities</h4>
+                <p>Top performers get pre-placement offers and referrals to our partner companies</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- =============================== STATS SECTION =============================== -->
+<section class="stats-section">
+    <div class="container">
+        <div class="section-header animate-on-scroll">
+            <h2 class="section-title">Our Internship Impact</h2>
+            <p class="section-subtitle">
+                Transforming careers through hands-on learning and industry exposure
+            </p>
+        </div>
+        <div class="stats-grid">
+            <div class="stat-item-large animate-on-scroll">
+                <span class="stat-number-large">500+</span>
+                <span class="stat-label-large">Interns Placed</span>
+            </div>
+            <div class="stat-item-large animate-on-scroll">
+                <span class="stat-number-large">85%</span>
+                <span class="stat-label-large">Conversion Rate</span>
+            </div>
+            <div class="stat-item-large animate-on-scroll">
+                <span class="stat-number-large">50+</span>
+                <span class="stat-label-large">Partner Companies</span>
+            </div>
+            <div class="stat-item-large animate-on-scroll">
+                <span class="stat-number-large">4.8</span>
+                <span class="stat-label-large">Avg. Rating</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+
+        /* ── MODAL ── */
+        const enrollModal = document.getElementById('enrollModal');
+        const closeModal = document.getElementById('closeModal');
+        const modalProgramTitle = document.getElementById('modalProgramTitle');
+        const programNameInput = document.getElementById('programNameInput');
+        const successPopup = document.getElementById('successPopup');
+        const closeSuccessPopup = document.getElementById('closeSuccessPopup');
+
+        window.openEnrollModal = function (programName) {
+            modalProgramTitle.textContent = `Enroll in ${programName}`;
+            programNameInput.value = programName;
+            enrollModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        };
+
+        closeModal.onclick = () => { enrollModal.classList.remove('active'); document.body.style.overflow = 'auto'; };
+        closeSuccessPopup.onclick = () => { successPopup.classList.remove('active'); document.body.style.overflow = 'auto'; };
+
+        window.onclick = (e) => {
+            if (e.target === enrollModal) { enrollModal.classList.remove('active'); document.body.style.overflow = 'auto'; }
+            if (e.target === successPopup) { successPopup.classList.remove('active'); document.body.style.overflow = 'auto'; }
+        };
+
+        {% if messages %}
+        {% for message in messages %}
+        {% if message.tags == 'success' %}
+        successPopup.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        {% endif %}
+        {% endfor %}
+        {% endif %}
+
+        /* ── SCROLL ANIMATIONS ── */
+        const animateOnScroll = () => {
+            document.querySelectorAll('.animate-on-scroll').forEach((el, i) => {
+                if (el.getBoundingClientRect().top < window.innerHeight / 1.15) {
+                    setTimeout(() => el.classList.add('animated'), i * 80);
+                }
+            });
+        };
+        animateOnScroll();
+        window.addEventListener('scroll', animateOnScroll);
+
+        /* ── HERO SLIDER ── */
+        const track = document.getElementById('sliderTrack');
+        const slides = track.querySelectorAll('.slide');
+        const dots = document.querySelectorAll('.slider-dot');
+        const prevBtn = document.getElementById('sliderPrev');
+        const nextBtn = document.getElementById('sliderNext');
+        const counter = document.getElementById('slideCounter');
+        const progressBar = document.getElementById('sliderProgress');
+
+        const total = slides.length;
+        let current = 0;
+        let autoTimer = null;
+        const AUTO_DELAY = 4500;
+
+        const pad = n => String(n).padStart(2, '0');
+
+        function goTo(idx) {
+            slides[current].classList.remove('active');
+            dots[current].classList.remove('active');
+            current = (idx + total) % total;
+            track.style.transform = `translateX(-${current * 100}%)`;
+            slides[current].classList.add('active');
+            dots[current].classList.add('active');
+            counter.textContent = `${pad(current + 1)} / ${pad(total)}`;
+            restartProgress();
+        }
+
+        function restartProgress() {
+            progressBar.style.transition = 'none';
+            progressBar.style.width = '0%';
+            requestAnimationFrame(() => requestAnimationFrame(() => {
+                progressBar.style.transition = `width ${AUTO_DELAY}ms linear`;
+                progressBar.style.width = '100%';
+            }));
+        }
+
+        const startAuto = () => { stopAuto(); autoTimer = setInterval(() => goTo(current + 1), AUTO_DELAY); };
+        const stopAuto = () => clearInterval(autoTimer);
+
+        prevBtn.addEventListener('click', () => { goTo(current - 1); stopAuto(); startAuto(); });
+        nextBtn.addEventListener('click', () => { goTo(current + 1); stopAuto(); startAuto(); });
+        dots.forEach(d => d.addEventListener('click', () => { goTo(+d.dataset.index); stopAuto(); startAuto(); }));
+
+        document.addEventListener('keydown', e => {
+            if (e.key === 'ArrowLeft') { goTo(current - 1); stopAuto(); startAuto(); }
+            if (e.key === 'ArrowRight') { goTo(current + 1); stopAuto(); startAuto(); }
+        });
+
+        let tX = 0;
+        track.addEventListener('touchstart', e => { tX = e.touches[0].clientX; }, { passive: true });
+        track.addEventListener('touchend', e => {
+            const d = tX - e.changedTouches[0].clientX;
+            if (Math.abs(d) > 50) { d > 0 ? goTo(current + 1) : goTo(current - 1); stopAuto(); startAuto(); }
+        });
+
+        const sliderEl = track.closest('.hero-slider-section');
+        sliderEl.addEventListener('mouseenter', stopAuto);
+        sliderEl.addEventListener('mouseleave', startAuto);
+
+        goTo(0);
+        startAuto();
+
+        /* ── NUMBER COUNTER ── */
+        const animateNumbers = (entries, observer) => {
+            entries.forEach(entry => {
+                if (!entry.isIntersecting) return;
+                const el = entry.target, text = el.textContent;
+                const suffix = text.includes('+') ? '+' : text.includes('%') ? '%' : '';
+                const value = parseFloat(text);
+                if (!isNaN(value)) {
+                    let cur = 0;
+                    const step = value / (1500 / 16);
+                    const t = setInterval(() => {
+                        cur += step;
+                        if (cur >= value) {
+                            el.textContent = Number.isInteger(value) ? `${value}${suffix}` : `${value.toFixed(1)}${suffix}`;
+                            clearInterval(t);
+                        } else {
+                            el.textContent = Number.isInteger(value) ? `${Math.floor(cur)}${suffix}` : `${cur.toFixed(1)}${suffix}`;
+                        }
+                    }, 16);
+                }
+                observer.unobserve(el);
+            });
+        };
+
+        const numObs = new IntersectionObserver(animateNumbers, { threshold: 0.5 });
+        document.querySelectorAll('.stat-number-large').forEach(n => numObs.observe(n));
+
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,868 @@
+{% extends "user/base.html" %}
+{% load static %}
+
+{% block title %}Microsoft Azure Cloud - Smart Equations{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* ============================================
+       VIDEO HERO SECTION
+    ============================================ */
+    .video-hero {
+        position: relative;
+        width: 100%;
+        height: 88vh;
+        min-height: 520px;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .video-hero__video {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+        z-index: 0;
+    }
+
+    .video-hero__overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+            105deg,
+            rgba(0, 40, 120, 0.90) 0%,
+            rgba(0, 120, 212, 0.72) 45%,
+            rgba(0, 174, 240, 0.28) 100%
+        );
+        z-index: 1;
+    }
+
+    .video-hero__overlay::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='30' cy='30' r='1.4' fill='%23ffffff' fill-opacity='0.04'/%3E%3C/svg%3E");
+    }
+
+    .video-hero__content {
+        position: relative;
+        z-index: 2;
+        text-align: center;
+        color: #fff;
+        max-width: 900px;
+        padding: 0 24px;
+        animation: fadeUp 1s ease forwards;
+    }
+
+    .video-hero__badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(255,255,255,0.12);
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(255,255,255,0.22);
+        padding: 7px 20px;
+        border-radius: 60px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        color: rgba(255,255,255,0.92);
+        margin-bottom: 28px;
+    }
+    .video-hero__badge i { color: #00aef0; }
+
+    .video-hero__content h1 {
+        font-size: clamp(2rem, 5vw, 3.8rem);
+        font-weight: 900;
+        line-height: 1.1;
+        margin: 0 0 20px;
+        text-shadow: 0 4px 24px rgba(0,0,0,0.35);
+        letter-spacing: -0.02em;
+    }
+
+    .video-hero__content h1 span {
+        background: linear-gradient(130deg, #fff, #a0e8ff);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .video-hero__content p {
+        font-size: clamp(1rem, 1.8vw, 1.25rem);
+        line-height: 1.7;
+        max-width: 680px;
+        margin: 0 auto 36px;
+        color: rgba(255,255,255,0.85);
+    }
+
+    .video-hero__btns {
+        display: flex;
+        gap: 16px;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-bottom: 52px;
+    }
+
+    .vhero-btn-primary {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        background: linear-gradient(135deg, #ffb900, #ff8c00);
+        color: #fff;
+        padding: 14px 36px;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: 0.95rem;
+        text-decoration: none;
+        box-shadow: 0 8px 24px rgba(255,185,0,0.45);
+        transition: transform 0.25s, box-shadow 0.25s;
+    }
+    .vhero-btn-primary:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 16px 36px rgba(255,185,0,0.55);
+        color: #fff;
+    }
+
+    .vhero-btn-outline {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        background: rgba(255,255,255,0.08);
+        backdrop-filter: blur(10px);
+        border: 1.5px solid rgba(255,255,255,0.35);
+        color: #fff;
+        padding: 13px 32px;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        text-decoration: none;
+        transition: all 0.25s;
+    }
+    .vhero-btn-outline:hover {
+        background: rgba(255,255,255,0.20);
+        border-color: rgba(255,255,255,0.70);
+        transform: translateY(-2px);
+        color: #fff;
+    }
+
+    .video-hero__stats {
+        display: flex;
+        justify-content: center;
+        gap: 24px;
+        flex-wrap: wrap;
+    }
+
+    .vhero-stat {
+        text-align: center;
+        padding: 18px 26px;
+        background: rgba(255,255,255,0.10);
+        backdrop-filter: blur(10px);
+        border-radius: 16px;
+        border: 1px solid rgba(255,255,255,0.18);
+        min-width: 140px;
+        transition: transform 0.25s, background 0.25s;
+    }
+    .vhero-stat:hover { transform: translateY(-4px); background: rgba(255,255,255,0.16); }
+    .vhero-stat-number { display: block; font-size: 2.2rem; font-weight: 900; color: #ffb900; line-height: 1; margin-bottom: 6px; }
+    .vhero-stat-label { font-size: 0.82rem; opacity: 0.88; font-weight: 500; }
+
+    .video-hero__mute {
+        position: absolute;
+        bottom: 28px; right: 28px; z-index: 5;
+        background: rgba(255,255,255,0.15);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255,255,255,0.28);
+        color: white;
+        width: 44px; height: 44px; border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        cursor: pointer; font-size: 1rem; transition: background 0.2s;
+    }
+    .video-hero__mute:hover { background: rgba(255,255,255,0.30); }
+
+    .video-hero__scroll {
+        position: absolute;
+        bottom: 28px; left: 50%;
+        transform: translateX(-50%);
+        z-index: 5;
+        display: flex; flex-direction: column; align-items: center; gap: 6px;
+        color: rgba(255,255,255,0.6);
+        font-size: 0.72rem; letter-spacing: 1.5px; text-transform: uppercase;
+        animation: bounce 2s ease-in-out infinite;
+    }
+    .video-hero__scroll i { font-size: 1.2rem; }
+
+    @keyframes bounce {
+        0%, 100% { transform: translateX(-50%) translateY(0); }
+        50%       { transform: translateX(-50%) translateY(8px); }
+    }
+    @keyframes fadeUp {
+        from { opacity: 0; transform: translateY(30px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ============================================
+       SHARED STYLES (Azure colour scheme)
+    ============================================ */
+    .what-is-section { padding: 100px 0; background: #f8f9fa; }
+    .section-container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+    .section-title { text-align: center; margin-bottom: 60px; color: #0078d4; font-size: 2.8rem; position: relative; padding-bottom: 20px; }
+    .section-title::after { content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 100px; height: 4px; background: linear-gradient(to right, #0078d4, #00aef0); border-radius: 2px; }
+    .section-subtitle { text-align: center; color: #666; font-size: 1.2rem; max-width: 800px; margin: 0 auto 50px; line-height: 1.6; }
+
+    .definition-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+    .definition-text h3 { color: #0078d4; margin-bottom: 20px; font-size: 2rem; }
+    .definition-text p { color: #555; line-height: 1.8; margin-bottom: 25px; font-size: 1.1rem; }
+    .highlight-box { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); border-left: 5px solid #00aef0; margin: 30px 0; }
+    .highlight-box h4 { color: #0078d4; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
+    .definition-image { position: relative; }
+    .definition-image img { width: 100%; border-radius: 15px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); transition: transform 0.5s ease; }
+    .definition-image:hover img { transform: scale(1.02); }
+    .image-caption { position: absolute; bottom: -20px; left: 20px; right: 20px; background: white; padding: 15px; border-radius: 10px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); text-align: center; font-style: italic; color: #666; }
+
+    /* Architecture */
+    .architecture-section { padding: 100px 0; background: white; }
+    .architecture-timeline { display: flex; justify-content: space-between; margin-top: 60px; position: relative; }
+    .architecture-timeline::before { content: ''; position: absolute; top: 60px; left: 10%; right: 10%; height: 3px; background: linear-gradient(to right, #0078d4, #00aef0); z-index: 1; }
+    .architecture-layer { text-align: center; position: relative; z-index: 2; flex: 1; padding: 0 15px; }
+    .layer-number { width: 120px; height: 120px; background: linear-gradient(135deg, #0078d4, #00aef0); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 30px; color: white; font-size: 2rem; font-weight: 700; box-shadow: 0 10px 30px rgba(0,120,212,0.3); transition: transform 0.3s ease; }
+    .architecture-layer:hover .layer-number { transform: scale(1.1) rotate(5deg); }
+    .layer-content { background: #f8f9fa; padding: 30px; border-radius: 15px; min-height: 280px; transition: all 0.3s ease; border: 2px solid transparent; }
+    .architecture-layer:hover .layer-content { background: white; border-color: #00aef0; box-shadow: 0 15px 35px rgba(0,174,240,0.1); transform: translateY(-10px); }
+    .layer-content h4 { color: #0078d4; margin-bottom: 15px; font-size: 1.4rem; }
+    .layer-content p { color: #666; line-height: 1.6; margin-bottom: 15px; }
+    .layer-tools { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 15px; }
+    .tool-tag { background: #f0f8ff; color: #0078d4; padding: 5px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 500; }
+
+    /* Services */
+    .services-section { padding: 100px 0; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); }
+    .services-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 30px; margin-top: 50px; }
+    .service-card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.08); transition: all 0.4s ease; position: relative; height: 100%; display: flex; flex-direction: column; }
+    .service-card:hover { transform: translateY(-15px); box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
+    .service-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 5px; background: linear-gradient(to right, #0078d4, #00aef0); }
+    .service-header { padding: 30px 30px 0; text-align: center; flex-shrink: 0; }
+    .service-icon { width: 80px; height: 80px; background: linear-gradient(135deg, #0078d4, #00aef0); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: white; font-size: 2rem; }
+    .service-header h4 { color: #0078d4; margin-bottom: 10px; font-size: 1.5rem; min-height: 60px; display: flex; align-items: center; justify-content: center; }
+    .service-body { padding: 20px 30px 30px; flex-grow: 1; display: flex; flex-direction: column; }
+    .service-body p { margin-bottom: 20px; color: #666; line-height: 1.6; }
+    .service-features { list-style: none; margin: 0; padding: 0; flex-grow: 1; }
+    .service-features li { padding: 10px 0; border-bottom: 1px solid #eee; display: flex; align-items: flex-start; gap: 10px; color: #666; font-size: 0.95rem; line-height: 1.4; }
+    .service-features li:last-child { border-bottom: none; }
+    .service-features i { color: #00aef0; flex-shrink: 0; margin-top: 3px; }
+
+    /* Use Cases */
+    .usecases-section { padding: 100px 0; background: white; }
+    .usecases-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 40px; margin-top: 50px; }
+    .usecase-card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.08); transition: all 0.4s ease; display: flex; flex-direction: column; }
+    .usecase-card:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
+    .usecase-image { height: 200px; overflow: hidden; position: relative; flex-shrink: 0; }
+    .usecase-image img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+    .usecase-card:hover .usecase-image img { transform: scale(1.1); }
+    .usecase-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,120,212,0.7), rgba(0,174,240,0.7)); display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; }
+    .usecase-card:hover .usecase-overlay { opacity: 1; }
+    .usecase-overlay span { color: white; font-weight: 600; background: rgba(0,0,0,0.7); padding: 10px 20px; border-radius: 50px; font-size: 1.1rem; }
+    .usecase-content { padding: 30px; flex-grow: 1; display: flex; flex-direction: column; }
+    .usecase-content h4 { color: #0078d4; margin-bottom: 15px; font-size: 1.4rem; min-height: 60px; display: flex; align-items: center; }
+    .usecase-content p { color: #666; line-height: 1.6; margin-bottom: 20px; flex-grow: 1; }
+    .usecase-tech { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+    .usecase-tech-tag { background: #f0f8ff; color: #0078d4; padding: 8px 15px; border-radius: 20px; font-size: 0.9rem; font-weight: 500; white-space: nowrap; }
+
+    /* Learning Path */
+    .learning-section { padding: 100px 0; background: linear-gradient(135deg, #0078d4 0%, #00aef0 100%); color: white; }
+    .learning-section .section-title { color: white; }
+    .learning-section .section-title::after { background: white; }
+    .learning-path { display: flex; justify-content: space-between; margin-top: 60px; position: relative; }
+    .learning-path::before { content: ''; position: absolute; top: 40px; left: 0; right: 0; height: 2px; background: rgba(255,255,255,0.3); }
+    .learning-stage { text-align: center; position: relative; z-index: 2; flex: 1; padding: 0 15px; }
+    .stage-icon { width: 80px; height: 80px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: #0078d4; font-size: 1.8rem; box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
+    .stage-content { background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); padding: 25px; border-radius: 15px; min-height: 180px; border: 1px solid rgba(255,255,255,0.2); display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    .stage-content h4 { color: #ffb900; margin-bottom: 10px; font-size: 1.3rem; text-align: center; min-height: 60px; display: flex; align-items: center; justify-content: center; }
+    .stage-content p { color: rgba(255,255,255,0.9); font-size: 0.95rem; text-align: center; line-height: 1.5; }
+
+    /* Certifications */
+    .certifications-section { padding: 100px 0; background: #f8f9fa; }
+    .certifications-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 30px; margin-top: 50px; }
+    .certification-card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.08); transition: all 0.4s ease; position: relative; height: 100%; display: flex; flex-direction: column; }
+    .certification-card:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
+    .certification-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 5px; background: linear-gradient(to right, #0078d4, #00aef0); }
+    .certification-header { padding: 30px 30px 0; text-align: center; flex-shrink: 0; }
+    .certification-icon { width: 80px; height: 80px; background: linear-gradient(135deg, #0078d4, #00aef0); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: white; font-size: 2rem; }
+    .certification-header h4 { color: #0078d4; margin-bottom: 10px; font-size: 1.5rem; min-height: 60px; display: flex; align-items: center; justify-content: center; }
+    .certification-level { display: inline-block; background: #f0f8ff; color: #0078d4; padding: 5px 15px; border-radius: 20px; font-size: 0.9rem; margin-bottom: 15px; }
+    .certification-body { padding: 20px 30px 30px; flex-grow: 1; display: flex; flex-direction: column; }
+    .certification-body p { margin-bottom: 20px; color: #666; line-height: 1.6; }
+    .certification-skills { list-style: none; margin: 0; padding: 0; flex-grow: 1; }
+    .certification-skills li { padding: 8px 0; border-bottom: 1px solid #eee; display: flex; align-items: flex-start; gap: 10px; color: #666; font-size: 0.95rem; }
+    .certification-skills li:last-child { border-bottom: none; }
+    .certification-skills i { color: #00aef0; flex-shrink: 0; margin-top: 3px; }
+
+    /* Enterprise */
+    .enterprise-section { padding: 100px 0; background: white; }
+    .enterprise-cards { display: grid; grid-template-columns: repeat(3,1fr); gap: 40px; margin-top: 50px; }
+    .enterprise-card { background: white; border-radius: 15px; padding: 40px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.08); transition: all 0.3s ease; position: relative; overflow: hidden; }
+    .enterprise-card:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
+    .enterprise-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 5px; background: linear-gradient(to right, #0078d4, #00aef0); }
+    .enterprise-icon { width: 80px; height: 80px; background: linear-gradient(135deg, #0078d4, #00aef0); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 25px; color: white; font-size: 2rem; }
+    .enterprise-stat { font-size: 2.5rem; font-weight: 700; color: #0078d4; margin: 20px 0 10px; }
+    .enterprise-title { color: #333; font-size: 1.4rem; margin-bottom: 15px; }
+    .enterprise-description { color: #666; line-height: 1.6; font-size: 1rem; }
+
+    /* CTA */
+    .cta-section { padding: 100px 0; background: linear-gradient(rgba(0,120,212,0.9), rgba(0,174,240,0.9)), url('https://images.unsplash.com/photo-1558494949-ef010cbdcc31?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80'); background-size: cover; background-position: center; color: white; text-align: center; }
+    .cta-content { max-width: 800px; margin: 0 auto; padding: 0 20px; }
+    .cta-content h2 { font-size: 2.8rem; margin-bottom: 20px; text-shadow: 2px 2px 10px rgba(0,0,0,0.3); }
+    .cta-content p { font-size: 1.2rem; margin-bottom: 40px; line-height: 1.6; opacity: 0.9; }
+    .cta-buttons { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; }
+    .cta-button { padding: 15px 40px; border-radius: 50px; font-weight: 600; font-size: 16px; cursor: pointer; transition: all 0.3s ease; text-decoration: none; display: inline-block; min-width: 180px; text-align: center; }
+    .cta-primary { background: #ffb900; color: white; border: none; box-shadow: 0 4px 15px rgba(255,185,0,0.4); }
+    .cta-primary:hover { background: #ffa500; transform: translateY(-3px); box-shadow: 0 8px 20px rgba(255,185,0,0.6); }
+    .cta-secondary { background: transparent; color: white; border: 2px solid white; }
+    .cta-secondary:hover { background: white; color: #0078d4; transform: translateY(-3px); }
+
+    /* Scroll animation */
+    .animate-on-scroll { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .animate-on-scroll.animated { opacity: 1; transform: translateY(0); }
+
+    /* ============================================
+       RESPONSIVE
+    ============================================ */
+    @media (max-width: 1200px) {
+        .services-grid { grid-template-columns: repeat(2,1fr); }
+        .usecases-grid { grid-template-columns: repeat(2,1fr); }
+        .enterprise-cards { grid-template-columns: repeat(2,1fr); }
+        .architecture-timeline { flex-wrap: wrap; }
+        .architecture-layer { flex: 0 0 calc(50% - 30px); margin-bottom: 60px; }
+        .architecture-timeline::before { display: none; }
+    }
+    @media (max-width: 992px) {
+        .video-hero { height: 80vh; }
+        .definition-grid { grid-template-columns: 1fr; }
+        .learning-path { flex-wrap: wrap; }
+        .learning-stage { flex: 0 0 calc(50% - 30px); margin-bottom: 40px; }
+        .learning-path::before { display: none; }
+        .certifications-grid { grid-template-columns: repeat(2,1fr); }
+    }
+    @media (max-width: 768px) {
+        .video-hero { height: 100svh; }
+        .video-hero__stats { gap: 12px; }
+        .vhero-stat { min-width: 120px; padding: 14px 18px; }
+        .vhero-stat-number { font-size: 1.8rem; }
+        .architecture-layer { flex: 0 0 100%; }
+        .layer-content { min-height: auto; }
+        .services-grid, .usecases-grid, .enterprise-cards, .certifications-grid { grid-template-columns: 1fr; }
+        .cta-buttons { flex-direction: column; align-items: center; }
+        .cta-button { width: 100%; max-width: 300px; }
+        .learning-stage { flex: 0 0 100%; }
+        .video-hero__mute { bottom: 70px; }
+    }
+    @media (max-width: 576px) {
+        .video-hero__btns { flex-direction: column; align-items: center; }
+        .vhero-btn-primary, .vhero-btn-outline { width: 100%; max-width: 280px; justify-content: center; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- ============================================
+     VIDEO HERO
+============================================ -->
+<section class="video-hero">
+
+    <video
+        class="video-hero__video"
+        id="heroVideo"
+        autoplay
+        muted
+        loop
+        playsinline
+        preload="auto"
+        poster="{% static 'images/Cloud.png' %}"
+    >
+        <source src="{% static 'videos/cloud.mp4' %}" type="video/mp4">
+    </video>
+
+    <div class="video-hero__overlay"></div>
+
+    <button class="video-hero__mute" id="muteBtn" aria-label="Toggle mute">
+        <i class="fas fa-volume-mute" id="muteIcon"></i>
+    </button>
+
+    <div class="video-hero__scroll">
+        <span>Scroll</span>
+        <i class="fas fa-chevron-down"></i>
+    </div>
+
+    <div class="video-hero__content">
+        <div class="video-hero__badge">
+            <i class="fas fa-cloud"></i> Enterprise Cloud Platform
+        </div>
+
+        <h1>
+            Microsoft Azure<br>
+            <span>Cloud Computing</span>
+        </h1>
+
+        <p>
+            Transform your business with enterprise-grade cloud solutions. Master Azure's
+            comprehensive platform for scalable, secure, and innovative cloud computing.
+        </p>
+
+        <div class="video-hero__btns">
+            <a href="{% url 'request_call' %}" class="vhero-btn-primary">
+                <i class="fas fa-phone"></i> Request Consultation
+            </a>
+            <a href="#about" class="vhero-btn-outline">
+                <i class="fas fa-play-circle"></i> Explore Program
+            </a>
+        </div>
+
+        <div class="video-hero__stats">
+            <div class="vhero-stat">
+                <span class="vhero-stat-number">200+</span>
+                <span class="vhero-stat-label">Cloud Services</span>
+            </div>
+            <div class="vhero-stat">
+                <span class="vhero-stat-number">140K+</span>
+                <span class="vhero-stat-label">Enterprise Customers</span>
+            </div>
+            <div class="vhero-stat">
+                <span class="vhero-stat-number">$130K</span>
+                <span class="vhero-stat-label">Average Salary</span>
+            </div>
+            <div class="vhero-stat">
+                <span class="vhero-stat-number">95%</span>
+                <span class="vhero-stat-label">Fortune 500 Usage</span>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+
+<!-- What is Azure -->
+<section class="what-is-section" id="about">
+    <div class="section-container">
+        <h2 class="section-title animate-on-scroll">What is Microsoft Azure Cloud?</h2>
+        <p class="section-subtitle animate-on-scroll">Azure is Microsoft's comprehensive cloud computing platform offering Infrastructure as a Service (IaaS), Platform as a Service (PaaS), and Software as a Service (SaaS) for building, deploying, and managing applications.</p>
+
+        <div class="definition-grid">
+            <div class="definition-text">
+                <h3 class="animate-on-scroll">Enterprise Cloud Platform</h3>
+                <p class="animate-on-scroll">Azure provides <strong>200+ cloud services</strong> including computing, analytics, storage, and networking, enabling organizations to build, deploy, and manage applications through Microsoft's global data center network.</p>
+
+                <div class="highlight-box animate-on-scroll">
+                    <h4><i class="fas fa-cloud"></i> Cloud Service Models</h4>
+                    <p><strong>IaaS (Infrastructure as a Service):</strong> Virtual machines, storage, and networking resources</p>
+                    <p><strong>PaaS (Platform as a Service):</strong> Development and deployment environments without infrastructure management</p>
+                    <p><strong>SaaS (Software as a Service):</strong> Ready-to-use applications like Office 365 and Dynamics 365</p>
+                </div>
+            </div>
+
+            <div class="definition-image animate-on-scroll">
+                <img src="https://images.unsplash.com/photo-1542744095-fcf48d80b0fd?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Azure Cloud Architecture" loading="lazy">
+                <div class="image-caption">Azure's global infrastructure spans 60+ regions worldwide</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- Azure Architecture -->
+<section class="architecture-section">
+    <div class="section-container">
+        <h2 class="section-title animate-on-scroll">Azure Cloud Architecture</h2>
+        <p class="section-subtitle animate-on-scroll">A comprehensive cloud platform offering multiple service models for enterprise applications</p>
+
+        <div class="architecture-timeline">
+            <div class="architecture-layer animate-on-scroll">
+                <div class="layer-number">1</div>
+                <div class="layer-content">
+                    <h4>Infrastructure as a Service</h4>
+                    <p>Virtualized computing resources over the internet, including servers, storage, and networking.</p>
+                    <div class="layer-tools">
+                        <span class="tool-tag">Virtual Machines</span>
+                        <span class="tool-tag">Azure Storage</span>
+                        <span class="tool-tag">Virtual Networks</span>
+                        <span class="tool-tag">Load Balancers</span>
+                        <span class="tool-tag">VPN Gateway</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="architecture-layer animate-on-scroll">
+                <div class="layer-number">2</div>
+                <div class="layer-content">
+                    <h4>Platform as a Service</h4>
+                    <p>Development and deployment environment in the cloud without managing underlying infrastructure.</p>
+                    <div class="layer-tools">
+                        <span class="tool-tag">App Services</span>
+                        <span class="tool-tag">Azure SQL DB</span>
+                        <span class="tool-tag">Azure Functions</span>
+                        <span class="tool-tag">Kubernetes Service</span>
+                        <span class="tool-tag">Cosmos DB</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="architecture-layer animate-on-scroll">
+                <div class="layer-number">3</div>
+                <div class="layer-content">
+                    <h4>Software as a Service</h4>
+                    <p>Ready-to-use software applications delivered over the internet on a subscription basis.</p>
+                    <div class="layer-tools">
+                        <span class="tool-tag">Office 365</span>
+                        <span class="tool-tag">Dynamics 365</span>
+                        <span class="tool-tag">Azure DevOps</span>
+                        <span class="tool-tag">Power Platform</span>
+                        <span class="tool-tag">Teams</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- Core Azure Services -->
+<section class="services-section">
+    <div class="section-container">
+        <h2 class="section-title animate-on-scroll">Core Azure Services</h2>
+        <p class="section-subtitle animate-on-scroll">Master these essential services to become a proficient Azure Cloud Professional</p>
+
+        <div class="services-grid">
+            <div class="service-card animate-on-scroll">
+                <div class="service-header">
+                    <div class="service-icon"><i class="fas fa-server"></i></div>
+                    <h4>Compute Services</h4>
+                </div>
+                <div class="service-body">
+                    <p>Scalable computing resources for any workload, from virtual machines to serverless computing.</p>
+                    <ul class="service-features">
+                        <li><i class="fas fa-check"></i> Azure Virtual Machines</li>
+                        <li><i class="fas fa-check"></i> App Service &amp; Functions</li>
+                        <li><i class="fas fa-check"></i> Azure Kubernetes Service</li>
+                        <li><i class="fas fa-check"></i> Container Instances</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="service-card animate-on-scroll">
+                <div class="service-header">
+                    <div class="service-icon"><i class="fas fa-database"></i></div>
+                    <h4>Data &amp; Storage</h4>
+                </div>
+                <div class="service-body">
+                    <p>Comprehensive data services for structured, unstructured, and analytical workloads.</p>
+                    <ul class="service-features">
+                        <li><i class="fas fa-check"></i> Azure SQL Database</li>
+                        <li><i class="fas fa-check"></i> Cosmos DB (NoSQL)</li>
+                        <li><i class="fas fa-check"></i> Blob &amp; File Storage</li>
+                        <li><i class="fas fa-check"></i> Data Lake Storage</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="service-card animate-on-scroll">
+                <div class="service-header">
+                    <div class="service-icon"><i class="fas fa-network-wired"></i></div>
+                    <h4>Networking</h4>
+                </div>
+                <div class="service-body">
+                    <p>Secure and reliable networking services for connecting cloud and on-premises resources.</p>
+                    <ul class="service-features">
+                        <li><i class="fas fa-check"></i> Virtual Network (VNet)</li>
+                        <li><i class="fas fa-check"></i> Load Balancer &amp; Gateway</li>
+                        <li><i class="fas fa-check"></i> Azure DNS &amp; CDN</li>
+                        <li><i class="fas fa-check"></i> ExpressRoute</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="service-card animate-on-scroll">
+                <div class="service-header">
+                    <div class="service-icon"><i class="fas fa-shield-alt"></i></div>
+                    <h4>Security &amp; Identity</h4>
+                </div>
+                <div class="service-body">
+                    <p>Comprehensive security services including identity management, threat protection, and compliance.</p>
+                    <ul class="service-features">
+                        <li><i class="fas fa-check"></i> Azure Active Directory</li>
+                        <li><i class="fas fa-check"></i> Key Vault &amp; Security Center</li>
+                        <li><i class="fas fa-check"></i> Sentinel &amp; Defender</li>
+                        <li><i class="fas fa-check"></i> Policy &amp; Compliance</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- Enterprise Use Cases -->
+<section class="usecases-section">
+    <div class="section-container">
+        <h2 class="section-title animate-on-scroll">Enterprise Use Cases</h2>
+        <p class="section-subtitle animate-on-scroll">Real-world applications and solutions powered by Azure Cloud</p>
+
+        <div class="usecases-grid">
+            <div class="usecase-card animate-on-scroll">
+                <div class="usecase-image">
+                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="E-commerce Migration" loading="lazy">
+                    <div class="usecase-overlay"><span>View Solution</span></div>
+                </div>
+                <div class="usecase-content">
+                    <h4>E-commerce Platform Migration</h4>
+                    <p>Migrate on-premise e-commerce systems to Azure for improved scalability, global reach, and cost optimization during peak shopping seasons.</p>
+                    <div class="usecase-tech">
+                        <span class="usecase-tech-tag">Azure App Service</span>
+                        <span class="usecase-tech-tag">Cosmos DB</span>
+                        <span class="usecase-tech-tag">CDN</span>
+                        <span class="usecase-tech-tag">Redis Cache</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="usecase-card animate-on-scroll">
+                <div class="usecase-image">
+                    <img src="https://images.unsplash.com/photo-1551836026-d5c2c5af78e4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="AI Analytics" loading="lazy">
+                    <div class="usecase-overlay"><span>View Solution</span></div>
+                </div>
+                <div class="usecase-content">
+                    <h4>AI-Powered Analytics</h4>
+                    <p>Implement machine learning models for predictive analytics, customer insights, and automated decision-making in financial services.</p>
+                    <div class="usecase-tech">
+                        <span class="usecase-tech-tag">Azure ML</span>
+                        <span class="usecase-tech-tag">Databricks</span>
+                        <span class="usecase-tech-tag">Synapse Analytics</span>
+                        <span class="usecase-tech-tag">Power BI</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="usecase-card animate-on-scroll">
+                <div class="usecase-image">
+                    <img src="https://images.unsplash.com/photo-1581094794329-c8112a89af12?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="IoT Healthcare" loading="lazy">
+                    <div class="usecase-overlay"><span>View Solution</span></div>
+                </div>
+                <div class="usecase-content">
+                    <h4>IoT Healthcare Monitoring</h4>
+                    <p>Build secure IoT solutions for remote patient monitoring with real-time data processing and HIPAA-compliant storage.</p>
+                    <div class="usecase-tech">
+                        <span class="usecase-tech-tag">IoT Hub</span>
+                        <span class="usecase-tech-tag">Event Hubs</span>
+                        <span class="usecase-tech-tag">Stream Analytics</span>
+                        <span class="usecase-tech-tag">Time Series Insights</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- Learning Path -->
+<section class="learning-section">
+    <div class="section-container">
+        <h2 class="section-title animate-on-scroll">Azure Cloud Learning Path</h2>
+        <p class="section-subtitle animate-on-scroll" style="color:rgba(255,255,255,.85);">Structured journey from cloud fundamentals to advanced Azure solutions architecture</p>
+
+        <div class="learning-path">
+            <div class="learning-stage animate-on-scroll">
+                <div class="stage-icon"><i class="fas fa-cloud"></i></div>
+                <div class="stage-content">
+                    <h4>Cloud Fundamentals</h4>
+                    <p>Master cloud concepts, Azure services, security, and pricing models (AZ-900)</p>
+                </div>
+            </div>
+
+            <div class="learning-stage animate-on-scroll">
+                <div class="stage-icon"><i class="fas fa-cogs"></i></div>
+                <div class="stage-content">
+                    <h4>Administration</h4>
+                    <p>Azure resource management, storage, virtual networking, and identity (AZ-104)</p>
+                </div>
+            </div>
+
+            <div class="learning-stage animate-on-scroll">
+                <div class="stage-icon"><i class="fas fa-archway"></i></div>
+                <div class="stage-content">
+                    <h4>Solutions Architecture</h4>
+                    <p>Design solutions for compute, storage, security, and monitoring (AZ-305)</p>
+                </div>
+            </div>
+
+            <div class="learning-stage animate-on-scroll">
+                <div class="stage-icon"><i class="fas fa-robot"></i></div>
+                <div class="stage-content">
+                    <h4>Specialization</h4>
+                    <p>AI, Data, Security, or DevOps specialization with role-based certifications</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- Azure Certifications -->
+<section class="certifications-section">
+    <div class="section-container">
+        <h2 class="section-title animate-on-scroll">Azure Certifications Path</h2>
+        <p class="section-subtitle animate-on-scroll">Industry-recognized certifications to validate your Azure expertise</p>
+
+        <div class="certifications-grid">
+            <div class="certification-card animate-on-scroll">
+                <div class="certification-header">
+                    <div class="certification-icon"><i class="fas fa-graduation-cap"></i></div>
+                    <h4>Azure Fundamentals</h4>
+                    <span class="certification-level">Beginner Level</span>
+                </div>
+                <div class="certification-body">
+                    <p>Foundational knowledge of cloud concepts, Azure services, security, and pricing.</p>
+                    <ul class="certification-skills">
+                        <li><i class="fas fa-check"></i> Cloud Concepts</li>
+                        <li><i class="fas fa-check"></i> Core Azure Services</li>
+                        <li><i class="fas fa-check"></i> Security &amp; Compliance</li>
+                        <li><i class="fas fa-check"></i> Azure Pricing &amp; Support</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="certification-card animate-on-scroll">
+                <div class="certification-header">
+                    <div class="certification-icon"><i class="fas fa-user-tie"></i></div>
+                    <h4>Azure Administrator</h4>
+                    <span class="certification-level">Associate Level</span>
+                </div>
+                <div class="certification-body">
+                    <p>Implement, manage, and monitor identity, governance, storage, compute, and virtual networks.</p>
+                    <ul class="certification-skills">
+                        <li><i class="fas fa-check"></i> Resource Management</li>
+                        <li><i class="fas fa-check"></i> Storage Configuration</li>
+                        <li><i class="fas fa-check"></i> Virtual Networking</li>
+                        <li><i class="fas fa-check"></i> Identity Management</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="certification-card animate-on-scroll">
+                <div class="certification-header">
+                    <div class="certification-icon"><i class="fas fa-archway"></i></div>
+                    <h4>Solutions Architect</h4>
+                    <span class="certification-level">Expert Level</span>
+                </div>
+                <div class="certification-body">
+                    <p>Design solutions that run on Azure, including compute, network, storage, and security.</p>
+                    <ul class="certification-skills">
+                        <li><i class="fas fa-check"></i> Solution Design</li>
+                        <li><i class="fas fa-check"></i> Infrastructure Strategy</li>
+                        <li><i class="fas fa-check"></i> Data Architecture</li>
+                        <li><i class="fas fa-check"></i> Business Continuity</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- Enterprise Demand -->
+<section class="enterprise-section">
+    <div class="section-container">
+        <h2 class="section-title animate-on-scroll">Enterprise Demand &amp; Opportunities</h2>
+        <p class="section-subtitle animate-on-scroll">Azure is the fastest-growing enterprise cloud platform with massive adoption</p>
+
+        <div class="enterprise-cards">
+            <div class="enterprise-card animate-on-scroll">
+                <div class="enterprise-icon"><i class="fas fa-chart-line"></i></div>
+                <div class="enterprise-stat">95%</div>
+                <h4 class="enterprise-title">Fortune 500 Companies</h4>
+                <p class="enterprise-description">Trust Azure for their mission-critical workloads and digital transformation initiatives.</p>
+            </div>
+
+            <div class="enterprise-card animate-on-scroll">
+                <div class="enterprise-icon"><i class="fas fa-dollar-sign"></i></div>
+                <div class="enterprise-stat">$130K</div>
+                <h4 class="enterprise-title">Average Salary</h4>
+                <p class="enterprise-description">Azure-certified professionals command premium salaries with strong career growth.</p>
+            </div>
+
+            <div class="enterprise-card animate-on-scroll">
+                <div class="enterprise-icon"><i class="fas fa-globe"></i></div>
+                <div class="enterprise-stat">60+</div>
+                <h4 class="enterprise-title">Global Regions</h4>
+                <p class="enterprise-description">Azure operates in more regions than any other cloud provider for global coverage.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- CTA -->
+<section class="cta-section">
+    <div class="cta-content">
+        <h2 class="animate-on-scroll">Start Your Azure Cloud Journey Today</h2>
+        <p class="animate-on-scroll">Join millions of professionals transforming their careers with Azure Cloud expertise. Build scalable solutions and become an in-demand cloud professional.</p>
+
+        <div class="cta-buttons">
+            <a href="#" class="cta-button cta-primary animate-on-scroll">View Program Details</a>
+            <a href="{% url 'request_call' %}" class="cta-button cta-secondary animate-on-scroll">Talk to Cloud Advisor</a>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    /* ── SCROLL ANIMATIONS ── */
+    const animateOnScroll = () => {
+        document.querySelectorAll('.animate-on-scroll').forEach(el => {
+            if (el.getBoundingClientRect().top < window.innerHeight / 1.3)
+                el.classList.add('animated');
+        });
+    };
+    animateOnScroll();
+    window.addEventListener('scroll', animateOnScroll);
+
+    /* ── MUTE TOGGLE ── */
+    const video    = document.getElementById('heroVideo');
+    const muteBtn  = document.getElementById('muteBtn');
+    const muteIcon = document.getElementById('muteIcon');
+    muteBtn.addEventListener('click', () => {
+        video.muted = !video.muted;
+        muteIcon.className = video.muted ? 'fas fa-volume-mute' : 'fas fa-volume-up';
+    });
+
+    /* ── SMOOTH SCROLL ── */
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            const id = this.getAttribute('href');
+            if (id === '#') return;
+            e.preventDefault();
+            const target = document.querySelector(id);
+            if (target) window.scrollTo({ top: target.offsetTop - 80, behavior: 'smooth' });
+        });
+    });
+
+    /* ── EQUALIZE CARD HEIGHTS ── */
+    const equalizeCards = () => {
+        ['service-card', 'certification-card'].forEach(cls => {
+            const cards = document.querySelectorAll('.' + cls);
+            if (!cards.length) return;
+            cards.forEach(c => c.style.height = 'auto');
+            const max = Math.max(...[...cards].map(c => c.offsetHeight));
+            cards.forEach(c => c.style.height = max + 'px');
+        });
+    };
+    window.addEventListener('load', equalizeCards);
+    window.addEventListener('resize', equalizeCards);
+});
+</script>
+{% endblock %}

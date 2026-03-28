@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Smart Equations</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --sidebar-bg: #1a2980;
+            --sidebar-hover: #26d0ce;
+            --sidebar-text: #ffffff;
+            --main-bg: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-primary: #2c3e50;
+            --text-secondary: #7f8c8d;
+            --danger: #ff6b6b;
+            --warning: #ffa726;
+            --success: #26d0ce;
+            --info: #3498db;
+            --border-color: #e9ecef;
+        }
+
+        body {
+            background: var(--main-bg);
+            color: var(--text-primary);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 260px;
+            background: linear-gradient(135deg, var(--sidebar-bg) 0%, #0e1a5a 100%);
+            color: var(--sidebar-text);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            box-shadow: 4px 0 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar-header {
+            padding: 25px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+
+        .logo i {
+            color: var(--sidebar-hover);
+            font-size: 2rem;
+        }
+
+        .admin-title {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .sidebar-nav {
+            padding: 20px 0;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 25px;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+            font-weight: 500;
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border-left-color: var(--sidebar-hover);
+        }
+
+        .nav-item.active {
+            background: rgba(38, 208, 206, 0.15);
+            color: white;
+            border-left-color: var(--sidebar-hover);
+        }
+
+        .nav-item i {
+            width: 24px;
+            font-size: 1.2rem;
+            margin-right: 15px;
+            text-align: center;
+        }
+
+        .nav-label {
+            flex-grow: 1;
+        }
+
+        .nav-badge {
+            background: var(--danger);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            min-width: 25px;
+            text-align: center;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            margin-left: 260px;
+            padding: 30px;
+            transition: all 0.3s ease;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .header h1 {
+            font-size: 2.2rem;
+            color: var(--text-primary);
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header h1 i {
+            color: var(--sidebar-hover);
+            font-size: 2rem;
+        }
+
+        .header-stats {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .admin-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .admin-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--sidebar-bg) 0%, var(--sidebar-hover) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+
+        .admin-name {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .admin-role {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        /* Dashboard Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 6px;
+            height: 100%;
+        }
+
+        .stat-card:nth-child(1)::before { background: var(--info); }
+        .stat-card:nth-child(2)::before { background: var(--warning); }
+        .stat-card:nth-child(3)::before { background: var(--success); }
+        .stat-card:nth-child(4)::before { background: var(--danger); }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: white;
+        }
+
+        .stat-card:nth-child(1) .stat-icon { background: var(--info); }
+        .stat-card:nth-child(2) .stat-icon { background: var(--warning); }
+        .stat-card:nth-child(3) .stat-icon { background: var(--success); }
+        .stat-card:nth-child(4) .stat-icon { background: var(--danger); }
+
+        .stat-trend {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .stat-trend.up {
+            color: #27ae60;
+        }
+
+        .stat-trend.down {
+            color: #e74c3c;
+        }
+
+        .stat-content {
+            margin-bottom: 15px;
+        }
+
+        .stat-number {
+            font-size: 2.8rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            line-height: 1;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .stat-footer {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 15px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        /* Quick Actions */
+        .actions-section {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-title i {
+            color: var(--sidebar-hover);
+        }
+
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .action-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 25px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            text-decoration: none;
+            color: var(--text-primary);
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .action-card:hover {
+            border-color: var(--sidebar-hover);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .action-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--sidebar-bg) 0%, var(--sidebar-hover) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .action-content {
+            flex: 1;
+        }
+
+        .action-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .action-desc {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 2px solid var(--border-color);
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 80px;
+            }
+            
+            .sidebar-header .admin-title,
+            .nav-label,
+            .nav-badge {
+                display: none;
+            }
+            
+            .nav-item {
+                justify-content: center;
+                padding: 20px;
+            }
+            
+            .nav-item i {
+                margin-right: 0;
+                font-size: 1.4rem;
+            }
+            
+            .main-content {
+                margin-left: 80px;
+            }
+            
+            .logo span {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 20px;
+            }
+            
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 20px;
+            }
+            
+            .header-stats {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .sidebar {
+                width: 70px;
+            }
+            
+            .main-content {
+                margin-left: 70px;
+                padding: 15px;
+            }
+            
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .stat-card {
+                padding: 25px;
+            }
+            
+            .stat-number {
+                font-size: 2.2rem;
+            }
+            
+            .actions-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .stat-card, .action-card {
+            animation: fadeIn 0.6s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <i class="fas fa-cube"></i>
+                <span>SmartEq</span>
+            </div>
+            <div class="admin-title">Administration Panel</div>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <a href="#" class="nav-item active">
+                <i class="fas fa-tachometer-alt"></i>
+                <span class="nav-label">Dashboard</span>
+            </a>
+            
+            <a href="{% url 'callback_list' %}" class="nav-item">
+                <i class="fas fa-phone-alt"></i>
+                <span class="nav-label">Callback Requests</span>
+                {% if pending_calls > 0 %}
+                <span class="nav-badge">{{ pending_calls }}</span>
+                {% endif %}
+            </a>
+            
+            <!-- <a href="#" class="nav-item">
+                <i class="fas fa-users"></i>
+                <span class="nav-label">User Management</span>
+            </a>
+            
+            <a href="#" class="nav-item">
+                <i class="fas fa-comments"></i>
+                <span class="nav-label">Messages</span>
+                {% if unread_msgs > 0 %}
+                <span class="nav-badge">{{ unread_msgs }}</span>
+                {% endif %}
+            </a>
+            
+            <a href="#" class="nav-item">
+                <i class="fas fa-chart-line"></i>
+                <span class="nav-label">Analytics</span>
+            </a>
+            
+            <a href="#" class="nav-item">
+                <i class="fas fa-cog"></i>
+                <span class="nav-label">Settings</span>
+            </a> -->
+            
+            <a href="{% url 'admin_logout' %}" class="nav-item" style="margin-top: 30px;">
+                <i class="fas fa-sign-out-alt"></i>
+                <span class="nav-label">Logout</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="header">
+            <h1>
+                <i class="fas fa-tachometer-alt"></i>
+                Admin Dashboard
+            </h1>
+            
+            <div class="header-stats">
+                <div class="admin-info">
+                    <div class="admin-avatar">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                    <div>
+                        <div class="admin-name">Administrator</div>
+                        <div class="admin-role">System Admin</div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Stats Grid -->
+        <section class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon">
+                        <i class="fas fa-phone-volume"></i>
+                    </div>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-number">{{ total_calls }}</div>
+                    <div class="stat-label">Total Callback Requests</div>
+                </div>
+                <div class="stat-footer">
+                    <span><i class="fas fa-clock"></i> Updated just now</span>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon">
+                        <i class="fas fa-hourglass-half"></i>
+                    </div>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-number">{{ pending_calls }}</div>
+                    <div class="stat-label">Pending Callbacks</div>
+                </div>
+                <div class="stat-footer">
+                    <span>Requires immediate attention</span>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-number">{{ total_users }}</div>
+                    <div class="stat-label">Registered Users</div>
+                </div>
+                <div class="stat-footer">
+                    <span><i class="fas fa-user-plus"></i> 12 new this week</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quick Actions -->
+        <section class="actions-section">
+            <h2 class="section-title">
+                <i class="fas fa-bolt"></i>
+                Quick Actions
+            </h2>
+            
+            <div class="actions-grid">
+                <a href="{% url 'callback_list' %}" class="action-card">
+                    <div class="action-icon">
+                        <i class="fas fa-phone-alt"></i>
+                    </div>
+                    <div class="action-content">
+                        <div class="action-title">Manage Callbacks</div>
+                        <div class="action-desc">View and manage callback requests</div>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>© 2024 Smart Equations Admin Dashboard. All rights reserved.</p>
+            <p>Last login: Today at 14:30 | Server status: <span style="color: var(--success); font-weight: 600;">Online</span></p>
+        </footer>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Highlight active nav item
+            const currentPath = window.location.pathname;
+            const navItems = document.querySelectorAll('.nav-item');
+            
+            navItems.forEach(item => {
+                if (item.getAttribute('href') === currentPath) {
+                    item.classList.add('active');
+                }
+            });
+            
+            // Add animation delay to stat cards
+            const statCards = document.querySelectorAll('.stat-card');
+            statCards.forEach((card, index) => {
+                card.style.animationDelay = `${index * 0.1}s`;
+            });
+            
+            // Update time display
+            function updateTime() {
+                const now = new Date();
+                const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                const dateString = now.toLocaleDateString([], { 
+                    weekday: 'long', 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                });
+                
+                const timeElement = document.createElement('div');
+                timeElement.className = 'time-display';
+                timeElement.innerHTML = `<i class="fas fa-clock"></i> ${timeString} • ${dateString}`;
+                
+                const existingTime = document.querySelector('.time-display');
+                if (existingTime) {
+                    existingTime.remove();
+                }
+                
+                const adminInfo = document.querySelector('.admin-info');
+                if (adminInfo) {
+                    adminInfo.appendChild(timeElement);
+                }
+            }
+            
+            updateTime();
+            setInterval(updateTime, 60000); // Update every minute
+            
+            // Add hover effects to action cards
+            const actionCards = document.querySelectorAll('.action-card');
+            actionCards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    const icon = this.querySelector('.action-icon');
+                    icon.style.transform = 'scale(1.1) rotate(5deg)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    const icon = this.querySelector('.action-icon');
+                    icon.style.transform = 'scale(1) rotate(0deg)';
+                });
+            });
+            
+            // Add loading animation to stats
+            const statNumbers = document.querySelectorAll('.stat-number');
+            statNumbers.forEach(number => {
+                const originalValue = parseInt(number.textContent);
+                let currentValue = 0;
+                const duration = 1500;
+                const step = originalValue / (duration / 16);
+                
+                const counter = setInterval(() => {
+                    currentValue += step;
+                    if (currentValue >= originalValue) {
+                        number.textContent = originalValue;
+                        clearInterval(counter);
+                    } else {
+                        number.textContent = Math.floor(currentValue);
+                    }
+                }, 16);
+            });
+        });
+    </script>
+</body>
+</html>
