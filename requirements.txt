@@ -1,11 +1,6 @@
-<<<<<<< HEAD
+
 django
 mysqlclient
 gunicorn
 whitenoise
-=======
-django
-mysqlclient
-gunicorn
-whitenoise
->>>>>>> 1e8d0f6845cb41a9fffce0346762c79224751fed
+
